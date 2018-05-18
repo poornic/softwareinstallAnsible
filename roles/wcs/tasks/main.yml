@@ -1,0 +1,27 @@
+---
+
+ - name: Download and extract WCS
+   unarchive: src={{ software_library_url }}/wcs/ofm_sites_generic_11.1.1.8.0_disk1_1of1.zip dest={{ downloads_dir }}/ creates={{ downloads_dir }}/WebCenterSites_11.1.1.8.0 copy=no
+
+ - name: Staging directory for Sites install
+   file: path={{ downloads_dir }}/WCS_Sites state=directory
+
+ - name: Extract WCS_Sites.zip from the archive
+   command: unzip -d {{ downloads_dir }}/WCS_Sites {{ downloads_dir }}/WebCenterSites_11.1.1.8.0/WCS_Sites/WCS_Sites.zip
+   args:
+     creates: "{{ downloads_dir }}/WCS_Sites/Sites"
+
+ - name: Remove sample sites
+   replace: dest={{ downloads_dir }}/WCS_Sites/Sites/main.sh regexp=",avisports.xml,fs2.xml" replace=""
+
+ - name: Install WCS for each Tomcat instance
+   include: install.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+
+ - name: Run Patch15 tasks
+   include: patch15_main.yml
+
+ - name: Run custom configuration tasks
+   include: custom_main.yml

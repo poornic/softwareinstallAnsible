@@ -1,0 +1,207 @@
+---
+
+env:                         "{{ inventory_dir | basename }}"
+
+include_atg:                 "true"
+include_coherence:           "true"
+
+wls_admin_host:             "{{server_name}}"
+
+# override this variable to change the prefix for datagrid.
+prefix:                     "nova"
+wlg_domain_type:             "all"
+weblogic_user:               "weblogic"
+weblogic_password:           "weblogic1"
+domain_production_mode:      "false"
+domain_jta_timeout:          "600"
+domain_name:                 "{{prefix}}-{{ wlg_domain_type }}-{{ env }}"
+
+oracle_base:                 "/opt/oracle"
+oracle_home:                 "{{ oracle_base }}/middleware12c"
+ora_inventory:               "{{ oracle_base }}/oraInventory"
+domain_home:                 "{{ oracle_base }}/domains/{{ domain_name }}"
+
+nodemanager_home:            "{{ domain_home }}/nodemanager"
+nm_type:                     "SSL"
+nm_port:                     5556
+
+atg_version:                 11.1
+atg_class_path:              "{{ domain_home }}/lib/protocol.jar:{{ domain_home }}/lib/netty.jar:{{ domain_home }}/lib/jnpserver.jar:{{ domain_home }}/lib/jnp-client.jar:{{ domain_home }}/lib/jboss-jms-api.jar:{{ domain_home }}/lib/hornetq-jms-client.jar:{{ domain_home }}/lib/hornetq-core-client.jar:{{ domain_home }}/lib/hornetq-commons.jar"
+atg_data_dir: "{{ domain_home }}/ATG-Data"
+ds_driver_name:              "oracle.jdbc.xa.client.OracleXADataSource"
+
+server_name:                 "{{ ansible_hostname }}"
+server_ip:                   "{{ ansible_eth0.ipv4.address }}"
+wls_server_listenaddr:       "{{ server_name }}"
+
+wls_atg_admin_user:          "admin"
+wls_atg_admin_password:      "{{ weblogic_password }}"
+
+bo_cluster:                  "bo-cluster"
+bcc_cluster:                 "bcc-cluster"
+live_cluster:                "clientweb-cluster"
+traveller_cluster:           "travellerweb-cluster"
+
+bo_lock_cluster:             "bo-lock-cluster"
+bcc_lock_cluster:            "bcc-lock-cluster"
+live_lock_cluster:           "atg-lock-cluster"
+
+coh_cluster:                 "{{prefix}}-datagrid-{{ env | upper }}"
+coh_wls_cluster:             "DataWLSCluster-{{ env | upper }}"
+coh_web_cluster:             "{{prefix}}-datagrid-web-{{ env | upper }}"
+
+wls_coh_web_server:          "{{prefix}}-datagrid-web-1"
+wls_coh_server_prefix:       "{{prefix}}_datagrid_server_"
+wls_coh_port_start:          "8001"
+
+################################
+## HORNETQ CONFIGURATION
+################################
+
+hq_modulename:               "HornetQJMSModule"
+hq_servername:               "HornetQForeignServer"
+hq_init_context_factory:     "org.jnp.interfaces.NamingContextFactory"
+hq_conn_factory_name:        "HQXAConnectionFactory"
+hq_conn_factory_local_jndi:  "jms/HQ_XACF"
+hq_conn_factory_remote_jndi: "/XAConnectionFactory"
+hq_destinations:
+ - name:                     "HornetqCatalogLoadQueue"
+   local_jndi_name:          "/queue/OutgoingDataPushDestination"
+   remote_jndi_name:         "/queue/OutgoingDataPushDestination"
+ - name:                     "Hornetq-StaticDataTopic"
+   local_jndi_name:          "/jms/StaticData"
+   remote_jndi_name:         "/topic/StaticData"
+ - name:                     "Hornetq-ContractsTopic"
+   local_jndi_name:          "/jms/ContractsAndRatePlans"
+   remote_jndi_name:         "/topic/ContractsAndRatePlans"
+ - name:                     "DataloaderErrorQueue"
+   local_jndi_name:          "/jms/DataloaderErrorQueue"
+   remote_jndi_name:         "/queue/DataloaderErrorQueue"
+ - name:                     "ClientDataTopic"
+   local_jndi_name:          "/jms/ClientData"
+   remote_jndi_name:         "/topic/ClientData"
+ - name:                     "BookingResponseQueue"
+   local_jndi_name:          "/jms/BookingResponseQueue"
+   remote_jndi_name:         "/queue/BookingResponseQueue"
+ - name:                     "BookingResponseQueueForFDL"
+   local_jndi_name:          "/jms/BookingResponseQueueForFDL"
+   remote_jndi_name:         "/queue/BookingResponseQueueForFDL"
+
+database_url:                ""
+ds_targets:                  ""
+ds_maxcapacity:              ""
+ds_ca_user:                  ""
+ds_ca_password:              ""
+ds_liverw_user:                  ""
+ds_liverw_password:              ""
+ds_livea_user:                  ""
+ds_livea_password:              ""
+ds_liveb_user:                  ""
+ds_liveb_password:              ""
+ds_lpma_user:                  ""
+ds_lpma_password:              ""
+ds_lpmmv_user:                  ""
+ds_lpmmv_password:              ""
+
+data_sources:
+  - name: "CA"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/CA"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_ca_user }}"
+    password: "{{ ds_ca_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+  - name: "LiveRW"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/LiveRW"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_liverw_user }}"
+    password: "{{ ds_liverw_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+  - name: "LiveA"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/LiveA"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_livea_user }}"
+    password: "{{ ds_livea_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+  - name: "LiveB"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/LiveB"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_liveb_user }}"
+    password: "{{ ds_liveb_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+  - name: "LPMA"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/LPMA"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_lpma_user }}"
+    password: "{{ ds_lpma_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+  - name: "LPMMV"
+    target: "{{ ds_targets }}"
+    jndi: "jdbc/LPMMV"
+    driver: "{{ ds_driver_name }}"
+    url: "{{ database_url }}"
+    user: "{{ ds_lpmmv_user }}"
+    password: "{{ ds_lpmmv_password }}"
+    maxcapacity: "{{ ds_maxcapacity }}"
+
+########################
+# STARTUP ARGUMENTS
+########################
+
+cache_config: "coherence/nova-cache-config.xml"
+bo_jmx_port: 5056
+fo_jmx_port: 5052
+tr_jmx_port: 1093
+
+startup_args_gc:             "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"
+bo_startup_args_jvm_mem:     "-Xms2G -Xmx2G -XX:MaxPermSize=384m"
+bo_startup_args_coh_cluster: "-Dtangosol.coherence.cacheconfig={{cache_config}} -Dtangosol.coherence.cluster={{ coh_cluster }} -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.clusteraddress={{ coh_cluster_addr }} -Dtangosol.coherence.clusterport={{ coh_cluster_port}} -Dtangosol.coherence.mode=prod"
+bo_startup_args_coh_wka:     "-Dtangosol.coherence.cacheconfig={{cache_config}} -Dtangosol.coherence.cluster={{ coh_cluster }} -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.wka={{ coh_wka }} -Dtangosol.coherence.wka.port={{ coh_wka_port }} -Dtangosol.coherence.localhost={{ coh_wka }} "
+bo_startup_args_jmx:         "-Dcom.sun.management.jmxremote.port={{ bo_jmx_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+bo_startup_args_base:        "{{ bo_startup_args_jvm_mem }} -Datg.dynamo.data-dir={{ domain_home }}/ATG-Data {{ startup_args_gc }} -Ddisable.atg.dynamo.log=true -Dlog4j.configuration=file:{{ domain_home }}/config/log4j-bo.properties -Dlog4j.debug"
+bo_startup_args_test_env:    "{{ bo_startup_args_base }} {{ bo_startup_args_coh_wka }} {{ bo_startup_args_jmx }}  -Datg.allowRemoveAllItems=true"
+bo_startup_args_managed_env: "{{ bo_startup_args_base }} {{ bo_startup_args_coh_cluster }}"
+
+fo_startup_args_jvm_mem:     "-Xms2g -Xmx2g -XX:MaxPermSize=384m"
+fo_startup_args_base:   "{{ fo_startup_args_jvm_mem }} -Datg.dynamo.data-dir={{ domain_home }}/ATG-Data -Ddisable.atg.dynamo.log=true -Dlog4j.configuration=file:{{ domain_home }}/config/log4j-store.properties -Dlog4j.debug"
+fo_startup_args_jmx:         "-Dcom.sun.management.jmxremote.port={{ fo_jmx_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+fo_startup_args_test_env:    "{{ fo_startup_args_base }} {{ startup_args_gc }} {{ fo_startup_args_jmx }}  -Datg.allowRemoveAllItems=true"
+fo_startup_args_managed_env: "{{ fo_startup_args_base }}"
+
+tr_startup_args_jvm_mem:     "-Xms2g -Xmx2g -XX:MaxPermSize=384m"
+tr_startup_args_base:   "{{ tr_startup_args_jvm_mem }} -Datg.dynamo.data-dir={{ domain_home }}/ATG-Data -Ddisable.atg.dynamo.log=true -Dlog4j.configuration=file:{{ domain_home }}/config/log4j-store.properties -Dlog4j.debug"
+tr_startup_args_jmx:         "-Dcom.sun.management.jmxremote.port={{ tr_jmx_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+tr_startup_args_test_env:    "{{ tr_startup_args_base }} {{ startup_args_gc }} {{ tr_startup_args_jmx }}  -Datg.allowRemoveAllItems=true"
+tr_startup_args_managed_env: "{{ tr_startup_args_base }}"
+
+ca_startup_args_jvm_mem:     "-Xms2g -Xmx2g -XX:MaxPermSize=384m"
+ca_startup_args_base:        "{{ ca_startup_args_jvm_mem }} -Datg.dynamo.data-dir={{ domain_home }}/ATG-Data -Ddisable.atg.dynamo.log=true -Dlog4j.configuration=file:{{ domain_home }}/config/log4j-store.properties -Dlog4j.debug"
+ca_startup_args_jmx:         "-Dcom.sun.management.jmxremote.port={{ ca_jmx_port }} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+ca_startup_args_test_env:    "{{ ca_startup_args_base }} {{ startup_args_gc }} -Datg.allowRemoveAllItems=true"
+ca_startup_args_managed_env: "{{ ca_startup_args_base }}"
+
+coh_mbean_jmx_port: 5002
+coh_jvm_mem_args:               "-Xms2g -Xmx2g"
+
+coh_mbean_startup_args_jvm_mem: "-Xms1536M -Xmx1536M"
+coh_mbean_startup_args:    "{{ coh_mbean_startup_args_jvm_mem }} -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+PrintGCDateStamps -XX:+HeapDumpOnOutOfMemoryError -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port={{ coh_mbean_jmx_port }} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djavax.management.builder.initial=weblogic.management.jmx.mbeanserver.WLSMBeanServerBuilder -Dtangosol.coherence.management=all -Dtangosol.coherence.management.remote=true -Dtangosol.coherence.management.extendedmbeanname=true -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.role=MBeanServer"
+
+# Modifications for Weblogic 12.2
+# http://jira.emea.kuoni.int/browse/CM-816
+coh_web_startup_args_coh_cluster: "-Dtangosol.coherence.cacheconfig={{cache_config}} -Dtangosol.coherence.cluster={{ coh_cluster }} -Dtangosol.coherence.clusteraddress={{ coh_cluster_addr }} -Dtangosol.coherence.clusterport={{ coh_cluster_port}} -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.mode=prod -Dtangosol.coherence.ttl=1 -Dtangosol.coherence.role=coh02a-webapp-1 -Dtangosol.coherence.member=coh02a-webapp-1 -Dtangosol.coherence.management.extendedmbeanname=true"
+coh_web_startup_args_coh_wka:     "-Dtangosol.coherence.cacheconfig={{cache_config}} -Dtangosol.coherence.cluster={{ coh_cluster }} -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.wka={{ coh_wka }} -Dtangosol.coherence.wka.port={{ coh_wka_port }} -Dtangosol.coherence.localhost={{ coh_wka }}"
+coh_web_startup_args_coh_wka_12_2: "-Dtangosol.coherence.cacheconfig={{cache_config}} -Dtangosol.coherence.cluster={{ coh_cluster }} -Dtangosol.coherence.clusteraddress={{ coh_wka }} -Dtangosol.coherence.clusterport={{ coh_wka_port}} -Dtangosol.coherence.distributed.localstorage=false -Dtangosol.coherence.ttl=1 -Dtangosol.coherence.distributed.localstorage=false"
+
+coh_web_startup_args_base:        "-Dnova.logging.factory=com.gta.nova.logging.LogCaptureFactory -Dnova.cohql.enabled=true -Dldap.url=ldap://emea.kuoni.int:389 -Dldap.domain=emea.kuoni.int"
+coh_web_args_test_env:            "{{ coh_web_startup_args_base }} {{ coh_web_startup_args_coh_wka }}"
+coh_web_args_test_env_12_2:            "{{ coh_web_startup_args_base }} {{ coh_web_startup_args_coh_wka_12_2 }}"
+coh_web_args_managed_env:         "{{ coh_web_startup_args_base }} {{ coh_web_startup_args_coh_cluster }}"

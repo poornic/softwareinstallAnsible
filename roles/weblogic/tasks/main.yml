@@ -1,0 +1,39 @@
+---
+
+ - name: Extract JAVA_HOME value for {{ app_user }} 
+   shell: "grep JAVA_HOME= /{{ app_user_home }}/.bashrc | head -1 | cut -d= -f2"
+   register: javahome
+   changed_when: False
+
+ - name: Set JAVA_HOME value
+   set_fact: java_home="{{ javahome.stdout }}"
+
+ - name: Download the weblogic installation
+   get_url: url={{ software_library_url }}/weblogic/{{ weblogic_jar_filename }}.jar dest={{ downloads_dir }}/{{ weblogic_jar_filename }}.jar force=no
+
+ - name: Copy file for silent installation of weblogic
+   template: src=silent-weblogic.txt dest={{ downloads_dir }}
+
+ - name: Copy OraInst.loc
+   template: src=oraInst.loc dest={{ downloads_dir }}
+
+ - name: Create ORACLE_BASE directory
+   file: path={{ oracle_base }} state=directory owner={{ app_user }} group={{ app_user }} mode=755
+
+ - name: Install Weblogic
+   shell: "{{ java_home }}/bin/java -Xms1024m -Xmx1024m -Djava.io.tmpdir=/var/tmp -jar {{ downloads_dir }}/{{ weblogic_jar_filename }}.jar -silent -responseFile {{ downloads_dir }}/silent-weblogic.txt -invPtrLoc {{ downloads_dir }}/oraInst.loc  creates={{ oracle_home }}"
+   become: true
+   become_method: sudo
+   become_user: "{{ app_user }}"
+   args:
+    warn: false
+
+ - name: Update the umask in startNodeManager.sh
+   lineinfile: dest={{ oracle_home }}/wlserver/server/bin/startNodeManager.sh line='umask 022' state=present regexp='^umask.*$' owner={{ app_user }} group={{ app_user }}
+
+ - name: Apply Coherence patch if installed and if specified
+   include: coh_patch.yml
+   when: apply_coh_patch
+
+ - name: Update the permission of {{ oracle_home }}
+   file: path={{ oracle_home }} state=directory mode=0755

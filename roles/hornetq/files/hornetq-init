@@ -1,0 +1,61 @@
+#!/bin/bash
+###########################################################
+## THIS FILE IS MANAGED BY ANSIBLE - DO NOT MANUALLY EDIT ##
+###########################################################
+#
+# GTA - custom HornetQ start / stop script
+#
+# chkconfig: - 80 20
+#
+### BEGIN INIT INFO
+# Provides: HornetQ
+# Required-Start: $network $syslog
+# Required-Stop: $network $syslog
+# Default-Start:
+# Default-Stop:
+# Description: GTA custom HornetQ start / stop script
+# Short-Description: start and stop HornetQ
+### END INIT INFO
+
+if [ $UID -ne 0 ]; then
+	echo 'Must be root to run this script.'
+	exit
+fi
+
+# Set environment
+HORNETQ_USER="${HORNETQ_USER:-hornetq}"
+HORNETQ_HOME='/opt/hornetq'
+
+##############################
+# Define functions
+start() {
+	echo 'Starting HornetQ'
+	# Correct ownership - just in case
+	chown -Rh ${HORNETQ_USER}. $HORNETQ_HOME
+	su - $HORNETQ_USER -c "cd ${HORNETQ_HOME}/bin;${HORNETQ_HOME}/bin/run.sh >> ${HORNETQ_HOME}/logs/hornetq.log 2>&1 &"
+}
+
+stop() {
+	echo "Stopping HornetQ"
+	cd ${HORNETQ_HOME}/bin
+	su - $HORNETQ_USER -c "cd ${HORNETQ_HOME}/bin;${HORNETQ_HOME}/bin/stop.sh >> ${HORNETQ_HOME}/logs/hornetq.log 2>&1 &"
+}
+
+
+#####################################
+# See how we were called
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;	
+	restart)
+		stop
+		start
+		;;
+	*)	
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac

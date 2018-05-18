@@ -1,0 +1,61 @@
+[atg]
+atg ansible_host=longwlg05d
+
+[bo]
+bo ansible_host=longwlg05d
+
+[fo]
+fo ansible_host=longwlg05d
+
+[coh]
+coh ansible_host=longwlg05d
+
+[endeca_cas]
+endeca_cas ansible_host=longwlg05d
+
+[endeca_tf]
+endeca_tf ansible_host=longwlg05d
+
+[endeca_ps]
+endeca_ps ansible_host=longwlg05d
+
+[endeca_mdex]
+endeca_mdex ansible_host=longwlg05d
+
+[fesb]
+fesb ansible_host=longwlg05d
+
+[fesb:vars]
+#ansible_connection=ssh
+#ansible_host=10.200.8.132
+
+[besb]
+besb ansible_host=longesb05a1
+
+[besb:vars]
+#ansible_connection=ssh
+#ansible_host=10.200.8.132
+
+[pnr]
+pnr ansible_host=longwlg05h
+
+[pnr:vars]
+#ansible_connection=ssh
+#ansible_host=10.200.8.132
+
+[hornetq]
+hornetq ansible_host=longesb05a1
+
+[ultraesb:children]
+fesb
+besb
+pnr
+
+[all:children]
+ultraesb
+atg
+endeca_cas
+endeca_tf
+endeca_ps
+endeca_mdex
+

@@ -1,0 +1,5 @@
+---
+
+jdk_version:     "jdk1.7.0_51"
+jdk_installer:   "jdk-7u51-linux-x64"
+create_app_user: true

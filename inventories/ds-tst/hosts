@@ -1,0 +1,3 @@
+[ds_uesb]
+longesb05a2_ds_uesb ansible_host=longesb05a2
+longesb05a3_ds_datasync ansible_host=longesb05a3

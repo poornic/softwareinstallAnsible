@@ -1,0 +1,21 @@
+---
+
+- name: Creates the directory for downloading installables from Software Library
+  file: path={{ downloads_dir }} owner=root group=root state=directory mode=0755
+
+- name: Create the directory for holding scripts
+  file: path={{ script_dir }} owner=root group=root state=directory mode=0755
+
+- block:
+
+  - name: Create the application user group
+    group: name={{ app_group }} state=present
+
+  - name: Create the application user
+    user: name={{ app_user }} shell=/bin/bash groups={{ app_group }} append=yes state=present home={{ app_user_home }}
+
+# fix for https://github.com/ansible/ansible/issues/22576: ensure home dir exists.
+  - name: Ensure home directory exists
+    file: name={{app_user_home}} state=directory
+
+  when: create_app_user

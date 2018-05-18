@@ -1,0 +1,4 @@
+---
+jdk_installer: "jdk-8u92-linux-x64"
+app_user: jenkins
+app_user_home: "{{jenkins_home}}"

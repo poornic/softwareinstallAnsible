@@ -1,0 +1,43 @@
+#group_vars/ist
+
+---
+fesb:
+                - name:		 ultraesb
+                  http_8280:     8280
+                  http_8443:     8443
+
+
+besb:
+                - name:		 ultraesb
+                  http_8280:     8280
+                  http_8443:     8443
+
+
+pnr:
+                - name:		 uesb4
+                  http_8280:     8580
+                  http_8443:     8743
+
+## weblogic domain properties
+wls_coh_clustername:        "nova-datagrid-TST1"
+wls_coh_clusterport:        "8081"
+hornetq_host:           "longesb05a1"
+wls_db_hostname:	   "longora02cscan.emea.kuoni.int"
+wls_db_servicename:     "atg_novtstc_srv.emea.kuoni.int"
+wls_db_ca_password:     "fitcontentc"
+wls_db_liverw_password:     "fitcorec"
+wls_db_livea_password:     "fitrepoac"
+wls_db_liveb_password:     "fitrepobc"
+wls_db_lpma_password:     "fitlpmac"
+wls_db_lpmmv_password:     "fitlpmmvc"
+
+## hornetq properties
+hornetq_clustered: true                 
+hornetq_multicast_ip:   "231.7.7.221"
+hornetq_Xms:            "1024m"
+hornetq_Xmx:            "1024m"
+
+
+
+
+

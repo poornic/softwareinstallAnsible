@@ -1,0 +1,3 @@
+---
+java_home:              "/opt/jdk1.8.0_92"
+jdk_installer:          "jdk-8u92-linux-x64"

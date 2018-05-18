@@ -1,0 +1,8 @@
+---
+
+# prefix for mts java8 coherence is "mts"
+prefix: "mts"
+weblogic_major_version: 12.2
+weblogic_minor_version: 1.2
+jdk_installer:    "jdk-8u92-linux-x64"
+apply_coh_patch:  false

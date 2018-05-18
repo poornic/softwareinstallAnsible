@@ -1,0 +1,27 @@
+---
+
+ - name: Create Tomcat home and log directories
+   file: path={{ tomcat_home }} state=directory owner={{ app_user }} group={{ app_group }}
+   with_items:
+    - "{{ tomcat_home }}"
+    - "{{ tomcat_log_home }}"
+
+ - name: Install Tomcat
+   include: install.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+
+ - name: Configure Tomcat
+   include: configure.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+
+ - name: Configure service script
+   template: src=tomcat_service.sh dest=/etc/init.d/{{ tomcat_major_version }} mode=0755
+
+ - name: Start Tomcat
+   command: service {{ tomcat_major_version }} start-{{ item }}
+   with_items: "{{ tomcat_instances }}"
+   when: restart_tomcat

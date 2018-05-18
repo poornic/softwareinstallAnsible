@@ -1,0 +1,25 @@
+---
+ - name: Check for instance directory
+   stat: path={{ tomcat_home }}/{{ tomcat_instance }}
+   register: tc_stat
+ - block:
+   - name: Download and extract Tomcat installation
+     unarchive: src={{ software_library_url }}/tomcat/apache-tomcat-{{ tomcat_version }}.tar.gz dest={{ tomcat_home }} owner={{ app_user }} group={{ app_group }} copy=no
+   - name: Rename Tomcat installation with instance name
+     command: mv {{ tomcat_home }}/apache-tomcat-{{ tomcat_version }} {{ tomcat_home }}/{{ tomcat_instance }}
+   - name: Set ownership of instance
+     file: path={{ tomcat_home }}/{{ tomcat_instance }} owner={{ app_user }} group={{ app_group }}
+   - name: Delete webapps and logs directories
+     file: path={{ tomcat_home }}/{{ tomcat_instance }}/{{ item }} state=absent
+     with_items:
+      - webapps
+      - logs
+   - name: Recreate webapps
+     file: path={{ tomcat_home }}/{{ tomcat_instance }}/webapps state=directory owner={{ app_user }} group={{ app_group }}
+   - name: Create log directory
+     file: path={{ tomcat_log_home }}/{{ tomcat_instance }} state=directory owner={{ app_user }} group={{ app_group }}
+   - name: Create symbolic link to log directory
+     file: src={{ tomcat_log_home }}/{{ tomcat_instance }} dest={{ tomcat_home }}/{{ tomcat_instance }}/logs state=link owner={{ app_user }} group={{ app_group }}
+   - name: Download Oracle DB driver (ojdbc6.jar)
+     get_url: url={{ software_library_url }}/oracle/ojdbc6.jar dest={{ tomcat_home }}/{{ tomcat_instance }}/lib/ owner={{ app_user }} group={{ app_group }}
+   when: not tc_stat.stat.exists

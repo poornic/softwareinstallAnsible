@@ -1,0 +1,22 @@
+---
+
+
+datasync_uesb_instances:
+ - uesb6
+
+fesb_ss_instances:
+ - uesb8
+
+ds_uesb_instances:
+ - uesb9
+
+fesb_instances:
+
+ - uesb1
+
+ds_besb_instances:
+ - uesb1
+
+# Ultraesb
+jvm_initmem: "2048"
+jvm_maxmem:  "2048"

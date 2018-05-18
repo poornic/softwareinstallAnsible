@@ -1,0 +1,30 @@
+---
+
+app_user:                    "tomcat"
+app_group:                   "tomcat"
+
+wc_home:                     "/opt/webcenter"
+wcs_home:                    "{{ wc_home }}/sites_{{ tomcat_instance }}"
+wcs_server:                  "{{ ansible_hostname }}"
+wcs_port:                    "{{ 8079 + tomcat_instance[-1] | int }}"
+wcs_protocol:                "http"
+wcs_url:                     "{{ wcs_protocol }}://{{ wcs_server }}:{{ wcs_port }}"
+
+wcs_admin_user:              "fwadmin"
+wcs_admin_password:          "xceladmin"
+
+wcs_db_driver:               "oracle.jdbc.driver.OracleDriver"
+wcs_db_max_connections:      "100"
+wcs_db_max_idle_connections: "30"
+
+wcs_caches:
+ - cascache
+ - cscache
+ - linkedcache
+ - sscache
+
+webapps_dir:                 "{{ tomcat_home }}/{{ tomcat_instance }}/webapps"
+
+endeca_app_user:             "vagrant"
+endeca_export_path:          "/opt/endeca/wcs-export"
+cs_exportcommonfolder:       "/all_content"

@@ -1,0 +1,21 @@
+[besb]
+longesb05a1_besb ansible_host=longesb05a1
+
+[fesb_ss]
+longesb05b1_fesb_ss ansible_host=longesb05a1
+
+[atg]
+longwlg05d
+
+[bo]
+longwlg05d
+
+[fo]
+longwlg05d
+
+[coh]
+longwlg05d
+
+[weblogic:children]
+atg
+coh

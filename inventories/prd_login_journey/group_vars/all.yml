@@ -1,0 +1,3 @@
+---
+
+app_user_home:         "/opt/{{ app_user }}"

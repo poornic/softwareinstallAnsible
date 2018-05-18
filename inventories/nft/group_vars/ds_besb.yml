@@ -1,0 +1,5 @@
+
+java_home: "/opt/jdk1.8.0_92"
+ultraesb_major_version: 2.6
+ultraesb_minor_version: 1
+custom_libs_zip:                "besb_lib_custom_jars.zip"

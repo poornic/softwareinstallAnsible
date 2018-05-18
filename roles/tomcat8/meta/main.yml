@@ -1,0 +1,4 @@
+---
+
+dependencies:
+ - { role: common, app_user: tomcat, app_user_home: "/opt/apache-tomcat-{{ tomcat_version }}"  } 

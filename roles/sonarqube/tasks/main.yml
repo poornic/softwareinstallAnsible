@@ -1,0 +1,53 @@
+---
+
+- name: "create directories"
+  file:
+    name: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{mysql_data_dir}}"
+    - "{{mysql_conf_dir}}"
+    - "{{sonarqube_docker_persistence_dir}}"
+
+- name: "copy MySQL configuration"
+  template: src=mysql/my.cnf dest="{{mysql_conf_dir}}/my.cnf"
+
+- name: "create and start db container - restart any running container"
+  docker_container:
+    name: "{{mysql_container_name}}"
+    image: "{{mysql_image}}"
+    state: started
+    restart: yes
+    ports:
+      - "{{mysql_port}}:{{mysql_port}}"
+    env:
+      MYSQL_USER: "{{sonar_db_username}}"
+      MYSQL_PASSWORD: "{{sonar_db_password}}"
+      MYSQL_DATABASE: "{{sonar_db}}"
+      MYSQL_ROOT_PASSWORD: "{{mysql_root_password}}"
+    volumes:
+      # MySQL Configuration is external
+      - "{{mysql_conf_dir}}:/etc/mysql/conf.d:ro"
+      # MySQL Data is external to Container
+      - "{{mysql_data_dir}}:/var/lib/mysql"
+
+- name: "create and start sonarqube container - restart any running containers"
+  docker_container:
+    name: "{{sonar_container_name}}"
+    image: "{{sonar_image}}"
+    state: started
+    restart: yes
+    ports:
+      - "{{sonar_port}}:{{sonar_port}}"
+      - "{{sonar_admin_port}}:{{sonar_admin_port}}"
+    links:
+      - "{{mysql_container_name}}:{{mysql_container_name}}"
+    env:
+      SONARQUBE_JDBC_USERNAME: "{{sonar_db_username}}"
+      SONARQUBE_JDBC_PASSWORD: "{{sonar_db_password}}"
+      SONARQUBE_JDBC_URL: "{{sonar_jdbc_url}}"
+    volumes:
+      - "{{sonarqube_docker_persistence_dir}}/sonarqube_conf:/opt/sonarqube/conf"
+      - "{{sonarqube_docker_persistence_dir}}/sonarqube_data:/opt/sonarqube/data"
+      - "{{sonarqube_docker_persistence_dir}}/sonarqube_extensions:/opt/sonarqube/extensions"
+      - "{{sonarqube_docker_persistence_dir}}/sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins"

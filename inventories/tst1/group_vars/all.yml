@@ -1,0 +1,21 @@
+---
+
+env_type:          "test"
+
+besb_instances:
+ - name:      uesb1
+   http_8280: 8380
+   http_8443: 8543
+ - name:      ultraesb
+   http_8280: 8280
+   http_8443: 8443
+
+fesb_instances:
+ - name:      ultraesb
+   http_8280: 8280
+   http_8443: 8443
+
+fesb_ss_instances:
+ - uesb3
+
+uesb_app_user_home:    "/opt/{{ app_user }}"

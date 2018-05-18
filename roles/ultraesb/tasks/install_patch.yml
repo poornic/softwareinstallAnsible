@@ -1,0 +1,19 @@
+---
+
+- name: Download ultraesb patch
+  get_url: >
+           url={{ software_library_url }}/ultraesb/UltraESB-ServicePack-{{ ultraesb_version }}-{{ ultraesb_patch_version }}.zip
+           dest={{ downloads_dir }}//UltraESB-ServicePack-{{ ultraesb_version }}-{{ ultraesb_patch_version }}.zip force=no
+
+- name: Clean ULTRA_HOME patches directory on ultraesb instances
+  file: path={{ uesb_home }}/lib/patches state=absent
+
+- name: Create ULTRA_HOME patches directory on ultraesb instances
+  file: path={{ uesb_home }}/lib/patches state=directory
+
+- name: Apply the ultraesb-patch on ultraesb instances
+  command: unzip -j {{ downloads_dir }}/UltraESB-ServicePack-{{ ultraesb_version }}-{{ ultraesb_patch_version }}.zip "*.jar" -d {{ uesb_home }}/lib/patches
+  notify: restart ultraesb
+
+- name: Set ownership of patches directory
+  file: path={{ uesb_home }}/lib/patches state=directory owner={{ ultraesb_user }} group={{ ultraesb_user }} recurse=yes

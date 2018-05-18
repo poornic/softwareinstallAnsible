@@ -1,0 +1,8 @@
+---
+
+- hosts: jenkins
+  roles:
+
+    - { role: common, become: true}
+    - { role: linux-jdk, tags: jdk }
+    - { role: jenkins }

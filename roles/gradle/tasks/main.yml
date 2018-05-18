@@ -1,0 +1,4 @@
+---
+
+ - name: Download Gradle archive from software library
+   unarchive: src={{ software_library_url }}/gradle/gradle-{{ gradle_version }}-bin.zip dest=/opt/ creates=/opt/gradle-{{ gradle_version }} copy=no

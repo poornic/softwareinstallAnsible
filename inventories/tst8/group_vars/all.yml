@@ -1,0 +1,31 @@
+---
+
+fesb:
+  - name:          uesb1
+    http_8280:     8280
+    http_8443:     8443
+
+besb:
+  - name:          uesb1
+    http_8280:     8280
+    http_8443:     8443
+
+pnr:
+  - name:          uesb3
+    http_8280:     8480
+    http_8443:     8643
+
+## weblogic domain properties
+wls_coh_clustername:        "nova-datagrid-TST-8"
+wls_coh_clusterport:        "8081"
+hornetq_host:               "longesb05g1"
+wls_db_hostname:	    "longora02cscan.emea.kuoni.int"
+wls_db_servicename:         "atg_atgtstj_srv.emea.kuoni.int"    
+
+## hornetq properties
+hornetq_clustered:          true                 
+hornetq_multicast_ip:       "231.7.7.130"
+hornetq_Xms:                "1024m"
+hornetq_Xmx:                "1024m"
+
+uesb_app_user_home:    "/opt/{{ app_user }}"

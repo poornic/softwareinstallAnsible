@@ -1,0 +1,87 @@
+---
+
+wls_admin_host: "{{server_name}}"
+wls_admin_ip: "{{server_ip}}"
+wls_admin_port: "7001"
+jdk_installer: "jdk-7u51-linux-x64"
+include_coherence: true
+include_bo:        true
+include_fo:        true
+
+machines:
+  - name: "{{ wls_admin_host }}"
+    addr: "{{wls_admin_ip}}"
+    port: "5556"
+    type: "SSL"
+
+coh_wka:      "{{ wls_admin_host }}"
+coh_wka_port: "8081"
+
+clusters:
+  - "{{ bo_cluster }}"
+  - "{{ bcc_cluster }}"
+  - "{{ live_cluster }}"
+  - "{{ traveller_cluster }}"
+  - "{{ coh_web_cluster }}"
+  - "{{ coh_wls_cluster }}"
+
+fo_managed_servers:
+  - name:           "{{prefix}}-live-server"
+    listenaddr:     "{{ wls_admin_host }}"
+    listenport:     "8180"
+    machine:        "{{ wls_admin_host }}"
+fo_startup_args:    "{{ fo_startup_args_test_env }}"
+
+ca_managed_servers:
+  - name:           "{{prefix}}-ca-server"
+    listenaddr:     "{{ wls_admin_host }}"
+    listenport:     "8480"
+    machine:        "{{ wls_admin_host }}"
+ca_startup_args:    "{{ ca_startup_args_test_env }}"
+
+bo_managed_servers:
+  - name:           "{{prefix}}-bo-server"
+    listenaddr:     "{{ wls_admin_host }}"
+    listenport:     "8680"
+    machine:        "{{ wls_admin_host }}"
+bo_startup_args:    "{{ bo_startup_args_test_env }}"
+
+tr_managed_servers:
+  - name:           "{{prefix}}-traveller-server"
+    listenaddr:     "{{ wls_admin_host }}"
+    listenport:     "8580"
+    machine:        "{{ wls_admin_host }}"
+tr_startup_args:    "{{ tr_startup_args_test_env }}"
+
+####
+# DATABASE URL SET TO EMPTY FOR DOCKER
+database_url: ""
+ds_maxcapacity: "30"
+ds_targets: "{{ bo_cluster }},{{ bcc_cluster }},{{ live_cluster }},{{ traveller_cluster }}"
+
+ds_ca_user:         "APP_FIT_ATG_CONTENT_ADMIN"
+ds_ca_password:     "fitcontenta"
+ds_liverw_user:     "APP_FIT_ATG_CORE"
+ds_liverw_password: "fitcorea"
+ds_livea_user:      "APP_FIT_ATG_REPO_A"
+ds_livea_password:  "fitrepoaa"
+ds_liveb_user:      "APP_FIT_ATG_REPO_B"
+ds_liveb_password:  "fitrepoba"
+ds_lpma_user:       "APP_FIT_ATG_LPM_A"
+ds_lpma_password:   "fitlpmaa"
+ds_lpmmv_user:      "APP_FIT_ATG_LPM_MV"
+ds_lpmmv_password:  "fitlpmmva"
+
+coh_machines: "{{ machines }}"
+coh_machines_list:     "{{ wls_admin_host }}"
+
+coh_mbean_svr_addr:    "{{ wls_admin_host }}"
+coh_mbean_svr_machine: "{{ wls_admin_host }}"
+coh_mbean_svr_port:    "7003"
+
+coh_web_svr_addr:      "{{ wls_admin_host }}"
+coh_web_svr_machine:   "{{ wls_admin_host }}"
+coh_web_svr_port:      "7007"
+coh_web_startup_args:  "{{ coh_web_args_test_env }}"
+
+hq_conn_url: "jnp://orcsesb05c1:1099"

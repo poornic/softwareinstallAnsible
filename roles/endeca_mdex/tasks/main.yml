@@ -1,0 +1,21 @@
+---
+
+- name: Download the Endeca MDEX installation
+  unarchive: src={{ software_library_url }}/endeca/MDEX/{{ endeca_mdex_installer }}.zip dest={{ downloads_dir }} copy=no list_files=yes mode=0755 group={{ app_user }} owner={{ app_user }}
+  register: mdex_script
+
+- debug: msg={{ mdex_script.files | first }}
+
+
+- name: Install Endeca MDEX
+  shell: "{{ downloads_dir }}/{{ mdex_script.files | first }} --silent --target /opt"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}" 
+  args:
+   warn: false
+   creates: "{{ endeca_home }}/MDEX"
+
+- name: Add environment variables in bashrc
+  lineinfile: dest='{{ app_user_home }}/.bashrc' line='source {{ endeca_home }}/MDEX/{{ endeca_mdex_version }}/mdex_setup_sh.ini' state=present regexp='^source {{ endeca_home }}/MDEX.*$'
+

@@ -1,0 +1,5 @@
+---
+
+dependencies:
+ - { role: common, app_user: tomcat, app_user_home: "/opt/{{ tomcat_major_version }}"  }
+ - { role: linux-jdk, app_user: tomcat, app_user_home: "/opt/{{ tomcat_major_version }}"  }

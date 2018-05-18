@@ -1,0 +1,18 @@
+---
+
+software_library_url:  "http://10.246.5.200/software/"
+app_user_home:         "/opt/ultraesb/{{ app_user }}"
+
+uesb_app_user_home:    "/opt/ultraesb/{{ app_user }}"
+uesb_home:             "/opt/ultraesb/{{ uesb_instance }}"
+uesb_logs_home:        "/var/log/gta/{{ uesb_instance }}"
+
+besb_instances:
+ - uesb3
+
+datasync_uesb_instances:
+ - uesb2
+
+fesb_instances:
+ - uesb1
+ - uesb2

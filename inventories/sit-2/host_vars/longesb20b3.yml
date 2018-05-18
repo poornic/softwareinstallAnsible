@@ -1,0 +1,20 @@
+---
+
+# FESB-BESB Global
+hornetq_UDPBroadcastGroupConfiguration_localBindAddress: "10.200.9.17"
+hornetq_UDPBroadcastGroupConfiguration_localBindPort:    "-1"
+
+# Datasync - inventory and rate rules
+inventoryBatchingSequence_enabled:                        "false"
+rateruleSequence_enabled:                                 "false"
+
+# Datasync - static content
+contentChangeDataReaderSequence_enabled:                  "false"
+
+# Datasync - booking and payment
+bookingSummaryDataBatchingSequence_enabled:               "true"
+paymentDataBatchingSequence_enabled:                      "true"
+
+# Datasync - unusable jobs
+bulkInventoryDataBatchingSequence_enabled:                "false"
+raterulesDataBatchingSequence_enabled:                    "false"

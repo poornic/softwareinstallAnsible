@@ -1,0 +1,9 @@
+---
+ 
+- hosts:        weblogic
+
+  roles:
+    - { role: common, app_user: "weblogic" } 
+    - { role: linux-jdk, app_user: "weblogic" }
+    - { role: weblogic, app_user: "weblogic" } 
+

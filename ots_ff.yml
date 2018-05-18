@@ -1,0 +1,6 @@
+---
+- name: prepare environment for ots-flatfile-data-loader
+  hosts: ots_ff
+  roles:
+    - { role: common }
+    - { role: linux-jdk }

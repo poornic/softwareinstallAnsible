@@ -1,0 +1,116 @@
+#!/bin/sh
+#
+# chkconfig: 345 99 01
+#
+# description: @serviceName
+#
+
+. /etc/rc.d/init.d/functions
+
+# Get config.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+cas={{ endeca_home }}/CAS/{{ endeca_cas_version }}
+startup=$cas/bin/cas-service.sh
+shutdown=$cas/bin/cas-service-shutdown.sh
+user={{ app_user }}
+currentUser=`id -un`
+
+CAS_WORKSPACE=$cas/../workspace
+export SHUTDOWN_WAIT=30
+start(){
+ echo -n $"Starting @serviceName service: "
+
+# Only run as root
+if [ $UID -ne 0 ]; then
+        echo "Must be root to run this script."
+        exit
+fi
+
+# Run as $user
+su - $user <<EOF
+  nohup $startup >> $CAS_WORKSPACE/logs/cas-service-wrapper.log &
+EOF
+a=0
+while [ $a -eq 0 ]
+do
+   a=`netstat -an | grep 8500 | wc -l`
+   echo -e ".\c"
+   sleep 2
+done
+RETVAL=$?
+}
+cas_pid() {
+    echo `ps -fe | grep 'com.endeca.itl.jetty.Main' | grep -v grep | tr -s " "|cut -d" " -f2`
+}
+stop(){
+ action $"Stopping @serviceName service: "
+ pid=$(cas_pid)
+  if [ -n "$pid" ]
+  then
+    echo "Stopping @serviceName"
+
+# Run as $user
+su - $user $shutdown
+
+    let kwait=$SHUTDOWN_WAIT
+    count=0;
+    until [ `ps -p $pid | grep -c $pid` = '0' ] || [ $count -gt $kwait ]
+    do
+      echo -n -e "\nwaiting for processes to exit";
+      sleep 1
+      let count=$count+1;
+    done
+
+    if [ $count -gt $kwait ]; then
+      echo -n -e "\nkilling processes which didn't stop after $SHUTDOWN_WAIT seconds"
+      kill -9 $pid
+    fi
+  else
+    echo "@serviceName is not running"
+  fi
+
+  return 0
+
+}
+
+restart(){
+  stop
+  start
+}
+
+
+# See how we were called.
+case "$1" in
+start)
+ start
+ RETVAL=0
+ ;;
+stop)
+ stop
+ RETVAL=0
+ ;;
+status)
+ pid=$(cas_pid)
+  if [ -n "$pid" ]
+  then
+    echo "@serviceName is running with pid: $pid"
+    RETVAL=0
+  else
+    echo "@serviceName is stopped"
+    RETVAL=3
+  fi
+  ;;
+restart)
+ restart
+ RETVAL=0
+ ;;
+*)
+ echo $"Usage: $0 {start|stop|status|restart}"
+exit 1
+esac
+
+exit $RETVAL
+

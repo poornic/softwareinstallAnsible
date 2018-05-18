@@ -1,0 +1,27 @@
+---
+
+- name: Download the Endeca PS installation
+  unarchive: src={{ software_library_url }}/endeca/PlatformServices/{{ endeca_ps_installer }}.zip dest={{ downloads_dir }} copy=no list_files=yes mode=0755 group={{ app_user }} owner={{ app_user }}
+  register: ps_script
+
+- name: Copy ps.properties
+  template: src=ps_eac_{{ eac_type }}.properties dest={{ downloads_dir }}
+
+- name: Install Endeca PS
+  shell: "{{ downloads_dir }}/{{ ps_script.files | join('') }} --silent --target /opt < {{ downloads_dir }}/ps_eac_{{ eac_type }}.properties"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}" 
+  args:
+   warn: false
+   creates: "{{ endeca_home }}/PlatformServices"
+
+- name: Copy the Endeca PS service script
+  template: src=ps-service dest=/etc/init.d/endeca-ps mode=0755
+
+- name: Add the ENDECA_ROOT to the user profile
+  lineinfile: dest='{{ app_user_home }}/.bashrc' line='source {{ endeca_home }}/PlatformServices/workspace/setup/installer_sh.ini' state=present
+
+- name: Ensure Endeca PS service is started
+  service: name=endeca-ps state=started enabled=yes
+

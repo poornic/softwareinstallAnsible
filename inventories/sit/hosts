@@ -1,0 +1,33 @@
+[ds_besb]
+longesb02b1_ds_besb ansible_host=longesb02b1
+longesb02b2_ds_besb ansible_host=longesb02b2
+longesb02b3_ds_besb ansible_host=longesb02b3
+
+[ds_uesb]
+longesb02b4_ds_s3 ansible_host=longesb02b4
+longesb02b4_ds_datasync ansible_host=longesb02b4
+
+[jdk]
+longcoh02a_ds ansible_host=longcoh02a
+longcoh02b_ds ansible_host=longcoh02b
+
+[datasync_uesb]
+longesb02b1_dsync ansible_host=longesb02b1
+longesb02b2_dsync ansible_host=longesb02b2
+longesb02b3_dsync ansible_host=longesb02b3
+
+[fesb_ss]
+longesb02b1_fess ansible_host=longesb02b1
+longesb02b2_fess ansible_host=longesb02b2
+longesb02b3_fess ansible_host=longesb02b3
+
+
+[ots_uesb]
+longesb02b4_ots ansible_host=longesb02b4
+longesb02b5_ots ansible_host=longesb02b5
+longesb02b6_ots ansible_host=longesb02b6
+
+[mts_pe_uesb]
+longesb02b4_mts_pe ansible_host=longesb02b4
+longesb02b5_mts_pe ansible_host=longesb02b5
+

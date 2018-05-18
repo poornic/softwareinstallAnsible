@@ -1,0 +1,32 @@
+---
+
+- name: Download coherence patch for Weblogic
+  get_url: url={{ software_library_url }}/weblogic/patch/{{ weblogic_coh_patch_version }}.zip dest={{downloads_dir}}
+
+- name: Extract the coherence patch on Weblogic
+  unarchive:
+    src: "{{downloads_dir}}/{{ weblogic_coh_patch_version }}.zip"
+    dest: "{{ oracle_home }}/OPatch"
+    creates: "{{ oracle_home }}/OPatch/{{ weblogic_coh_patch_version }}"
+    copy: no
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+
+- name: Identify if patch {{ weblogic_coh_patch_version }} has been applied
+  shell: "{{ oracle_home }}/OPatch/opatch lsinventory -jdk {{ java_home }}"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}"
+  args:
+   warn: false
+  register: lsinventory_contents
+
+- name: Apply the coherence patch on Weblogic if patch is not installed.
+  shell: "{{ oracle_home }}/OPatch/opatch apply {{ weblogic_coh_patch_version}} -jdk {{ java_home }}"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}"
+  args:
+   warn: false
+   chdir: "{{ oracle_home }}/OPatch"
+  when: lsinventory_contents.stdout.find( "{{ oracle_coherence_version }}" ) == -1

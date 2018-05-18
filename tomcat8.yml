@@ -1,0 +1,7 @@
+﻿---
+- hosts: tomcat8
+
+  roles:
+    - { role: common }
+    - { role: linux-jdk, jdk_installer: "jdk-8u92-linux-x64" }
+    - { role: tomcat8, restart_tomcat: true }

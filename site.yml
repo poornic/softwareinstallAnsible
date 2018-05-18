@@ -1,0 +1,14 @@
+---
+ #This playbook provisions the r9-ist environment. The roles below lists the softwares provisioned. Also the r9-ist/hosts file details the environment.
+ 
+- hosts:        all
+#  remote_user:  ctier
+
+#- include: fesb.yml
+#- include: besb.yml
+#- include: pnr.yml
+- include: atg.yml
+#- include: endeca_tf.yml
+#- include: endeca_cas.yml
+- include: endeca_ps.yml
+#- include: endeca_mdex.yml

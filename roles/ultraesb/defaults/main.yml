@@ -1,0 +1,25 @@
+---
+
+ultraesb_major_version: 2.3
+ultraesb_minor_version: 2
+ultraesb_version: "{{ultraesb_major_version}}.{{ultraesb_minor_version}}"
+ultraesb_user:    ultraesb
+
+restart:          true
+
+uesb_home:        "/opt/{{ uesb_instance }}"
+uesb_app_user_home:    "/opt/{{ app_user }}"
+uesb_logs_home:   "/var/log/{{ uesb_instance }}"
+
+java_home:        "/opt/jdk1.7.0_51"
+
+http_8280_port:   "{{ 81 + uesb_instance[-1] | int }}80"
+http_8443_port:   "{{ 83 + uesb_instance[-1] | int }}43"
+
+rmi_hostname:     "{{ ansible_hostname }}"
+jvm_initmem:      "1024"
+jvm_maxmem:       "1024"
+
+# embedded elasticsearch server present in ultraesb 2.6.1
+# disabled by default (http://jira.emea.kuoni.int/browse/CM-1005)
+embedded_elasticsearch_server_enabled: false

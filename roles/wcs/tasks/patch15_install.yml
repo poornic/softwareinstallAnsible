@@ -1,0 +1,206 @@
+---
+
+# These tasks are based on the patch documentation
+# http://sfwrepo.emea.kuoni.int/software/wcs/Patch15.pdf
+
+ - name: "Patch15 : Shut down Tomcat"
+   command: service {{ tomcat_major_version }} stop-{{ tomcat_instance }}
+   ignore_errors: true
+
+ - name: "Patch15 : Clean cache dirs"
+   file: path={{ tomcat_home }}/{{ tomcat_instance }}/temp/{{ item }} state=absent
+   with_items: "{{ wcs_caches }}"
+
+ - name: "Patch15 : Recreate cache dirs"
+   file: path={{ tomcat_home }}/{{ tomcat_instance }}/temp/{{ item }} state=directory owner={{ app_user }} group={{ app_group }} mode=0755
+   with_items: "{{ wcs_caches }}"
+
+ - name: "Patch15 : Remove CAS files"
+   file: path={{ webapps_dir }}/cas state=absent
+
+ - name: "Patch15 : Deploy cas.war form the patch"
+   copy: src={{ downloads_dir }}/patch/cas_upgrade/cas.war dest={{ webapps_dir }} remote_src=yes  owner={{ app_user }} group={{ app_group }}
+
+ - name: "Patch15 : Replace CAS config files"
+   synchronize: src={{ downloads_dir }}/patch/cas_upgrade/config/cas/{{ item }} dest={{ wcs_home }}/bin/
+   with_items:
+    - cas-spring-configuration
+    - deployerConfigContext.xml
+    - fatwire_settings.properties
+    - fatwire_views.properties
+    - cas.properties
+    - log4j.xml
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: "Patch15 : Replace WCS URL tokens"
+   replace: dest={{ wcs_home }}/bin/{{ item }} regexp=@CSConnectPrefix@://@hostname@:@portnumber@ replace={{ wcs_url }}
+   with_items:
+    - cas.properties
+    - deployerConfigContext.xml
+    - cas-spring-configuration/customDefaultWEMSSObeans.xml
+
+ - name: "Patch15 : Update cluster name"
+   replace: dest={{ wcs_home }}/bin/jbossTicketCacheReplicationConfig.xml regexp='(<attribute name="ClusterName">).*(</attribute>)' replace='\1TreeCache-Cluster-Node1\2'
+
+ - name: "Patch15 : Replace CAS context path token"
+   replace: dest={{ wcs_home }}/bin/cas-spring-configuration/customDefaultWEMSSObeans.xml regexp=@context-path@ replace=cas
+
+ - name: "Patch15 : Replace CS context path token"
+   replace: dest={{ wcs_home }}/bin/deployerConfigContext.xml regexp=@context-path@ replace=cs
+
+ - name: "Patch15 : Update RegexRegisteredService bean"
+   lineinfile: dest={{ wcs_home }}/bin/deployerConfigContext.xml insertafter=org.jasig.cas.services.RegexRegisteredService line='              p:allowedToProxy="true" p:ssoEnabled="true"'
+
+ - name: "Patch15 : Update log location in log4j.xml"
+   replace: dest={{ wcs_home }}/bin/log4j.xml regexp=@cas.log@ replace={{ wcs_home }}/logs/cas.log
+
+ - name: "Patch15 : Copy webapp files from patch"
+   synchronize: src={{ downloads_dir }}/patch/sites_webapp/ dest={{ webapps_dir }}/cs/ 
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: "Patch15 : Update satellite.properties"
+   lineinfile: dest={{ webapps_dir }}/cs/WEB-INF/classes/satellite.properties regexp=transparent.content-type.pattern= line=transparent.content-type.pattern=text/.*|.*xml(?!formats).*
+
+ - name: "Patch15 : Copy WCS installation files from patch"
+   synchronize: src={{ downloads_dir }}/patch/sites_install/ dest={{ wcs_home }}/
+   delegate_to: "{{ inventory_hostname }}"
+
+ - name: "Patch15 : Remove existing CSDT client"
+   file: path={{ wcs_home }}/csdt-client state=absent
+
+ - name: "Patch15 : Update CSDT"
+   unarchive: src={{ downloads_dir }}/patch/csdt.zip dest={{ wcs_home }} owner={{ app_user }} group={{ app_group }} copy=no creates={{ wcs_home }}/csdt-client
+
+ - name: "Patch15 : Update AdvPub.xml (1/2)"
+   lineinfile: 
+     dest:        "{{ webapps_dir }}/cs/WEB-INF/classes/AdvPub.xml"
+     insertbefore: "</beans>" 
+     line:        '    <bean id="AssetPublishCallback" class="com.fatwire.realtime.messaging.AssetPublishCallbackImpl" singleton="false" />'
+
+ - name: "Patch15 : Update AdvPub.xml (1/2)"
+   lineinfile: 
+     dest:         "{{ webapps_dir }}/cs/WEB-INF/classes/AdvPub.xml"
+     insertafter: 'bean id="DataUnpacker"' 
+     line:         '        <property name="assumeHungTime" value="600000" />'
+
+ - name: "Patch15 : Remove old JARs"
+   shell: find {{ wcs_home }}/Sun/lib {{ wcs_home }}/Sun/jws/common/lib {{ webapps_dir }}/cs/WEB-INF/lib {{ wcs_home }}/cs-cache/lib -name "{{ item }}" -exec rm {} \;
+   with_items:
+     - aspectjrt-1.5.3.jar
+     - aspectjweaver-1.5.3.jar
+     - commons-codec-1.4.jar
+     - commons-collections-3.2.1.jar
+     - commons-fileupload-1.2.1.jar
+     - commons-io-1.4.jar
+     - commons-lang-2.4.jar
+     - jaxb-api-2.1.jar
+     - jaxb-impl-2.1.12.jar
+     - log4j-1.2.16.jar
+     - slf4j-api-1.5.8.jar
+     - slf4j-jdk14-1.5.8.jar
+     - slf4j-api-1.6.1.jar
+     - slf4j-jdk14-1.6.1.jar
+     - spring-2.5.5.jar
+     - spring-2.5.6.jar
+     - spring-2.5.6.SEC03.jar
+     - xwork-2.0.4.jar
+
+ - name: "Patch15 : Replace commons-fileupload JAR"
+   copy: src={{ downloads_dir }}/patch/sites_webapp/WEB-INF/lib/commons-fileupload-1.3.1.jar dest={{ wcs_home }}/cs-cache/lib/ remote_src=yes owner={{ app_user }} group={{ app_group }} 
+
+ - name: "Patch15 : Add ShutdownListener to web.xml" 
+   blockinfile:
+     dest: "{{ webapps_dir }}/cs/WEB-INF/web.xml"
+     marker: "<!-- {mark} PATCH15 BLOCK 1 -->"
+     insertafter: "</listener>"
+     block: |
+       <listener>
+       <listener-class>net.sf.ehcache.constructs.web.ShutdownListener</listener-class>
+       </listener>
+
+ - name: "Patch15 : Start Tomcat"
+   command: service {{ tomcat_major_version }} start-{{ tomcat_instance }}
+
+ - name: "Patch15 : Wait for Tomcat to start up on port {{ wcs_port }}"
+   wait_for: port={{ wcs_port }} delay=60
+
+ - name: "Patch15 : Add security constraint to web.xml"
+   blockinfile:
+     dest: "{{ item }}"
+     marker: "<!-- {mark} PATCH15 BLOCK 2 -->"
+     insertbefore: "</web-app>"
+     block: |
+        <security-constraint>
+        <web-resource-collection>
+        <web-resource-name>NoAccess</web-resource-name>
+        <url-pattern>/jsp/cs_deployed/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint/>
+        <user-data-constraint>
+        <description/>
+        <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+        </security-constraint>
+   with_items:
+    - "{{ webapps_dir }}/cs/WEB-INF/web.xml"
+    - "{{ webapps_dir }}/cas/WEB-INF/web.xml"
+   notify: restart tomcat
+
+ - name: "Patch15 : Add ContentSecurityFilter to web.xml"
+   blockinfile:
+     dest: "{{ item }}"
+     marker: "<!-- {mark} PATCH15 BLOCK 3 -->"
+     insertafter: "</context-param>"
+     block: |
+        <filter>
+        <filter-name>Content Security Filter</filter-name>
+        <filter-class>COM.FutureTense.Security.Common.ContentSecurityFilter</filter-class>
+        </filter>
+   with_items:
+    - "{{ webapps_dir }}/cs/WEB-INF/web.xml"
+    - "{{ webapps_dir }}/cas/WEB-INF/web.xml"
+   notify: restart tomcat
+
+ - name: "Patch15 : Add ContentSecurityFilter mapping to web.xml"
+   blockinfile:
+     dest: "{{ item }}"
+     marker: "<!-- {mark} PATCH15 BLOCK 4 -->"
+     insertafter: "</filter-mapping>"
+     block: |
+        <filter-mapping>
+        <filter-name>Content Security Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+        </filter-mapping>
+   with_items:
+    - "{{ webapps_dir }}/cs/WEB-INF/web.xml"
+    - "{{ webapps_dir }}/cas/WEB-INF/web.xml"
+   notify: restart tomcat
+
+ - name: "Patch15 : Set xcelerate.treeType=DojoTree in futuretense_xcel.ini"
+   lineinfile: dest={{ wcs_home }}/futuretense_xcel.ini regexp=xcelerate.treeType= line=xcelerate.treeType=DojoTree
+   notify: restart tomcat
+
+ - name: "Patch15 : Set cs.deleteExcessRevisionsFromDisk=true in futuretense.ini"
+   lineinfile: dest={{ wcs_home }}/futuretense.ini line=cs.deleteExcessRevisionsFromDisk=true
+   notify: restart tomcat
+
+ - name: "Patch15 : Catalog Mover script"
+   template: src=catmove.sh dest={{ wcs_home }} owner={{ app_user }} group={{ app_group }}
+
+ - name: "Patch15 : Import catalogs"
+   command: sh catmove.sh {{ downloads_dir }}/patch/elements/{{ item }}
+   args:
+     chdir: "{{ wcs_home }}"
+   with_items:
+    - SystemInfo.html
+    - ElementCatalog.html
+    - MimeType.html
+    - SystemLocaleString.html
+    - SiteCatalog.html
+
+ - name: "Patch15 : Obtain DeleteAssets filename"
+   command: ls {{ wcs_home }}/Shared/elements/OpenMarket/Xcelerate/Admin/DeleteAssets*.jsp
+   register: deleteassets_filename
+
+ - name: "Patch15 : Fix bug in DeleteAssets.jsp"
+   replace: dest={{ deleteassets_filename.stdout }} regexp=VALUE replace=value

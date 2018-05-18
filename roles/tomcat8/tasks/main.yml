@@ -1,0 +1,86 @@
+---
+
+ - name: Create Tomcat home and log directories
+   file: path={{ tomcat_home }} state=directory owner={{ app_user }} group={{ app_group }}
+   with_items:
+    - "{{ tomcat_home }}"
+    - "{{ tomcat_log_home }}"
+    
+ - name: Download and extract Tomcat installation
+   unarchive: src={{ software_library_url }}/tomcat/apache-tomcat-{{ tomcat_version }}.tar.gz dest="/opt" owner={{ app_user }} group={{ app_group }} copy=no
+
+ - name: create tomcat instance directory
+   file: path={{ tomcat_instance_home }} state=directory owner={{ app_user }} group={{ app_group }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+   
+ - name: dir exists
+   file: dest={{ tomcat_home }} state=directory
+   
+    
+ - name: copy conf directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/conf {{ tomcat_instance_home }}
+   #command: mv -v {{ tomcat_home }}/conf {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+
+ - name: copy logs directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/logs {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+   
+ - name: copy webapps directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/webapps {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+  
+ - name: copy work directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/work {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance  
+     
+ - name: copy lib directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/lib {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+     
+ - name: copy temp directory to tomcat instance
+   command: cp -avr {{ tomcat_home }}/temp {{ tomcat_instance_home }}
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+ 
+ - name: Delete conf directories to tomcat_home
+   command: rm -rf {{ tomcat_home }}/conf
+   
+ - name: Delete logs directories to tomcat_home
+   command: rm -rf {{ tomcat_home }}/logs
+   
+ - name: Delete webapps directories to tomcat_home
+   command: rm -rf {{ tomcat_home }}/webapps
+   
+ - name: Delete work directories to tomcat_home
+   command: rm -rf {{ tomcat_home }}/work
+   
+ - name: Delete work directories to tomcat_home
+   command: rm -rf {{ tomcat_home }}/temp
+   
+ - name: Configure Tomcat
+   include: configure.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+
+ - name: Configure service script
+   template: src=tomcat_service.sh dest=/etc/init.d/{{ tomcat_major_version }} mode=0755
+
+ - name: Start Tomcat
+   command: service {{ tomcat_major_version }} start-{{ item }}
+   with_items: "{{ tomcat_instances }}"
+   when: restart_tomcat

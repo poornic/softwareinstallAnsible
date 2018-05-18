@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+###########################################################
+## THIS FILE IS MANAGED BY ANSIBLE - DO NOT MANUALLY EDIT ##
+###########################################################
+#
+# chkconfig: 345 91 1
+# description: Oracle Weblogic Admin Server service init script
+#
+
+### BEGIN INIT INFO
+# Provides: wlsadmin
+# Required-Start: $wlsnodemanager
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+# Short-Description: Oracle Weblogic Admin Server service init script
+# Description: Starts and stops Oracle Weblogic Admin Server using NodeManager
+### END INIT INFO
+
+#### BEGIN CUSTOM ENV
+WLSERVER=AdminServer
+MW_HOME={{ oracle_home }}
+DOMAIN_HOME={{ domain_home}}
+#### END CUSTOM ENV
+
+PROCESS_STRING="^.*Dweblogic.Name=AdminServer.*{{ domain_name }}"
+NMPROCESS_STRING="^.*$DOMAIN_HOME.*weblogic.NodeManager.*"
+PROGRAM_SCRIPT={{ script_dir }}/wlsmanage.py
+
+SERVICE_NAME=`/bin/basename $0`
+
+start() {
+	OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
+	if [ "$OLDPID" != "" ]; then
+		/bin/echo "Admin Server is already running (pid: $OLDPID)"
+	else
+		. $MW_HOME/wlserver/server/bin/setWLSEnv.sh
+		java weblogic.WLST $PROGRAM_SCRIPT $WLSERVER start
+	fi
+	RETVAL=$?
+}
+
+stop() {
+	OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
+	if [ "$OLDPID" = "" ]; then
+		/bin/echo "Admin Server is not running."
+	else
+		. $MW_HOME/wlserver/server/bin/setWLSEnv.sh
+		java weblogic.WLST $PROGRAM_SCRIPT $WLSERVER stop
+	fi
+	RETVAL=$?
+}
+
+status() {
+	OLDPID=`/usr/bin/pgrep -f $PROCESS_STRING`
+	if [ "$OLDPID" != "" ]; then
+		/bin/echo "Admin Server is running (pid: $OLDPID)"
+                 exit 0
+	else
+		/bin/echo "Admin Server is stopped"
+                 exit 1
+	fi
+	NMPID=`/usr/bin/pgrep -f $NMPROCESS_STRING`
+	if [ "$NMPID" != "" ]; then
+		/bin/echo "NodeManager is running (pid: $NMPID)"
+                 exit 0
+	else
+		/bin/echo "NodeManager is stopped"
+                 exit 1
+	fi
+	echo
+#	RETVAL=$?
+}
+
+restart() {
+	stop
+	sleep 10
+	start
+}
+
+# See how we were called
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status
+		;;
+	restart|force-reload|reload)
+		restart
+		;;
+	*)
+	echo $"Usage: $0 {start|stop|status}"
+	exit 1
+esac
+
+exit $RETVAL

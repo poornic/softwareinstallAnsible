@@ -1,0 +1,12 @@
+---
+
+ - name: Download movefilesandindex.sh
+   copy: src=movefilesandindex.sh dest={{ wcs_home }} owner={{ app_user }} group={{ app_group }}
+
+ - name: Create wcsexport.properties
+   template: src=wcsexport.properties dest={{ wcs_home }} owner={{ app_user }} group={{ app_group }}
+   notify: restart tomcat
+
+ - name: Update the site preview
+   lineinfile: dest={{ wcs_home }}/futuretense.ini regexp=^cs.sitepreview= line=cs.sitepreview=contentmanagement
+   notify: restart tomcat

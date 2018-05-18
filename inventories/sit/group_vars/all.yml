@@ -1,0 +1,13 @@
+---
+
+datasync_uesb_instances:
+ - uesb4
+
+fesb_ss_instances:
+ - uesb6
+
+ots_uesb_instances:
+ - uesb1
+
+mts_pe_uesb_instances:
+ - uesb2

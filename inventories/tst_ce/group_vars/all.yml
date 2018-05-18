@@ -1,0 +1,11 @@
+---
+
+## weblogic domain properties
+include_atg:                false
+
+wls_coh_clustername:        "ce_coherence_cluster"
+wls_coh_wkaport:            "8081"
+wls_coh_server_prefix:      "ce_coherence_server_"
+
+wls_coh_web_clustername:    "ce_coherence_web_cluster"
+wls_coh_web_server:         "ce_coherence_web_server_1"

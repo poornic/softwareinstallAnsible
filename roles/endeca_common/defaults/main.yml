@@ -1,0 +1,17 @@
+---
+   endeca_tf_patch_installer: "V46387-01-Oracle-Commerce-TAF-11.1-patch-Linux"
+   endeca_cas_installer: "V46393-01-Oracle-Commerce-CAS-11.1-Linux"
+   endeca_tf_installer: "V46387-01--Oracle-Commerce-TAF-11.1-Linux"
+   endeca_ps_installer: "V45999-01-Oracle-Commerce-Guided-Search-Platform-Services-11.1-Linux"
+   endeca_mdex_installer: "V46002-01-Oracle-Commerce-MDEX-6.5.1-Linux"
+
+   endeca_tf_version: "11.1.0"
+   endeca_cas_version: "11.1.0"
+   endeca_ps_version: "11.1.0"
+   endeca_mdex_version: "6.5.1"
+  
+   endeca_home: "/opt/endeca"
+   endeca_tools_root: "{{ endeca_home }}/ToolsAndFrameworks/11.1.0"
+
+   gradle_version: "1.10"
+   

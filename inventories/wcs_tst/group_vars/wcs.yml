@@ -1,0 +1,25 @@
+---
+
+tomcat_instances:
+ - tc1
+
+app: "wcs"
+
+jvm_args_mem:      "-Xms512m -Xmx2048m"
+jvm_args_permsize: "-XX:MaxPermSize=192m"
+
+wcs_db_url:        "jdbc:oracle:thin:@longora02cscan.emea.kuoni.int:1529/wcs_atg_novtste_srv.emea.kuoni.int"
+wcs_db_user:       "APP_WCS_ATG_TST"
+wcs_db_password:   "APP_WCS_ATG_TST"
+
+wcs_admin_password: "xceladmintst"
+
+endeca_envs:      
+ - name: "endeca_tst1" 
+   host: "longwlg05d"
+ - name: "endeca_tst2"
+   host: "longwlg05i"
+ - name: "endeca_tst8"
+   host: "longwlg05j"
+ - name: "endeca_tst_wlg05f"
+   host: "longwlg05f"

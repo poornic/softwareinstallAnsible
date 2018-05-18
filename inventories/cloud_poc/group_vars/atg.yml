@@ -1,0 +1,86 @@
+---
+
+wls_admin_host: "localhost"
+wls_admin_port: "7001"
+coh_wka:        "{{ wls_admin_host }}"
+coh_wka_port:   "8081"
+
+include_coherence: true
+include_bo:        true
+include_fo:        true
+
+machines:
+  - name: "localhost"
+    addr: "{{ server_name }}"
+    port: "5557"
+    type: "SSL"
+
+clusters:
+  - "{{ bo_cluster }}"
+  - "{{ bcc_cluster }}"
+  - "{{ live_cluster }}"
+  - "{{ traveller_cluster }}"
+  - "{{ coh_web_cluster }}"
+  - "{{ coh_wls_cluster }}"
+
+fo_managed_servers:
+  - name: "nova-live-server"
+    listenaddr: "localhost"
+    listenport: "8180"
+    machine: "localhost"
+fo_startup_args: "{{ fo_startup_args_test_env }}"
+
+ca_managed_servers:
+  - name: "nova-ca-server"
+    listenaddr: "localhost"
+    listenport: "8580"
+    machine: "localhost"
+ca_startup_args: "{{ ca_startup_args_test_env }}"
+
+bo_managed_servers:
+  - name: "nova-bo-server"
+    listenaddr: "localhost"
+    listenport: "8380"
+    machine: "localhost"
+bo_startup_args: "{{ bo_startup_args_test_env }}"
+
+tr_managed_servers:
+  - name: "nova-traveller-server"
+    listenaddr: "localhost"
+    listenport: "8480"
+    machine: "localhost"
+tr_startup_args: "{{ tr_startup_args_test_env }}"
+
+
+database_url: "jdbc:oracle:thin:@localhost:1521/XE"
+ds_maxcapacity: "30"
+ds_targets: "{{ bo_cluster }},{{ bcc_cluster }},{{ live_cluster }},{{ traveller_cluster }}"
+
+ds_ca_user:         "app_atg_content_admin"
+ds_ca_password:     "app_atg_content_admin"
+ds_liverw_user:     "app_atg_core"
+ds_liverw_password: "app_atg_core"
+ds_livea_user:      "app_atg_repo_a"
+ds_livea_password:  "app_atg_repo_a"
+ds_liveb_user:      "app_atg_repo_b"
+ds_liveb_password:  "app_atg_repo_b"
+ds_lpma_user:       "app_atg_lpm_a"
+ds_lpma_password:   "app_atg_lpm_a"
+ds_lpmmv_user:      "app_atg_lpm_mv"
+ds_lpmmv_password:  "app_atg_lpm_mv"
+
+coh_machines:       "{{ machines }}"
+coh_machines_list:  "localhost"
+
+wls_coh_wkaport:    "8081"
+
+coh_mbean_svr_addr:    "localhost"
+coh_mbean_svr_machine: "localhost"
+coh_mbean_svr_port:    "7003"
+
+coh_web_svr_addr:      "localhost"
+coh_web_svr_machine:   "localhost"
+coh_web_svr_port:      "7007"
+coh_web_startup_args:  "{{ coh_web_args_test_env }}"
+
+hq_conn_url:        "jnp://orcsesb05b1:1099"

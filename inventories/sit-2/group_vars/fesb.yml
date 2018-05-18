@@ -1,0 +1,73 @@
+---
+
+#PriceService
+ce_price_url:                                         "xweb.test.hosting.travel.lcl/ce/xmlSearch"
+ce_reprice_url:                                       "xweb.test.gta.travel.lcl/ce/CESearchesServlet"
+ce_price_stub:                                        "ce-stub.xml"
+ce_reprice_stub:                                      "reprice-ce-stub.xml"
+ce_price_timeout:                                     "7000"
+ce_reprice_timeout:                                   "30000"
+price_panda_coherence_timeout_sec:                    7
+price_availability_coherence_timeout_sec:             7
+ps_aggregator_timeout_msec:                           8000
+overall_ps_aggregator_timeout_msec:                   8500
+ots_price_service_url:                                "http://dummy-url:8080"
+ots_price_service_timeout:                            12000
+
+# Search service
+# refer to all.yml
+
+#XMLAdaptor
+booking_service_url:                                  "esb-sit.emea.kuoni.int:8280/service/booking-proxy"
+search_service_url:                                   "esb-sit.emea.kuoni.int:8280/service/booking-proxy"
+cancelBooking_service_url:                            "esb-sit.emea.kuoni.int:8280/service/booking-proxy"
+iteminformation_download_url:                         "atgbo-sit.emea.kuoni.int/loader/item-information-download"
+iteminformation_download_daysLimit:                   "31"
+error_queue:                                          "RetryPushQueueOne"
+dc_process_timeout_sec:                               "15"
+dc_response_server_filepath:                          "/mnt/downloadable_cache/"
+xmla_aggregator_timeout_msec:                         "50000"
+responseRefENV:                                       "T"
+kibana_endpoint_host:                                 "longkib04a.emea.kuoni.int"
+kibana_endpoint_port:                                 "1514"
+kibana_service_corePool_size:                         "20"
+kibana_service_maxPool_size:                          "50"
+kibana_service_queue_size:                            "10000"
+dc_response_server_shouldWriteToServer:               "FALSE"
+html_fe_search_url:                                   "http://esb-fess-sit.emea.kuoni.int:8280/service/htmlfe-search-service-proxy"
+
+
+#DataService
+jdbc_driverClassName:                                 "oracle.jdbc.driver.OracleDriver"
+jdbc_url:                                             "jdbc:oracle:thin:@longora02uatscan.hosting.travel.lcl:1529/push_service7_gsuatdb_srv.hosting.travel.lcl"
+jdbc_username:                                        "APP_PUSHSERVICE_7"
+jdbc_password:                                        "APP_PUSHSERVICE_7"
+
+#PushService
+max_No_Of_Attempts:                                   "2"
+timeInterval:                                         "30000"
+jndi_url:                                             "10.200.8.221:1099"
+dataservice_base_url:                                 "http://localhost:8280/service/push-data-service"
+dataservice_get_url:                                  "localhost:8280/service/push-data-service/getPayload"
+http_connection_timeout:                              "5000"
+socket_connection_timeout:                            "10000"
+
+#PaxPriceService
+ce_pax_price_url:                                     "xweb.test.gta.travel.lcl/ce/xmlSearch"
+ce_reprice_stub:                                      "../conf/reprice-ce-stub.xml"
+ce_pax_price_timeout:                                 "18000"
+price_panda_coherence_timeout_sec:                    "15"
+price_availability_coherence_timeout_sec:             "18"
+pax_ps_aggregator_timeout_msec:                       "19000"
+
+# PaxSearchService
+# Moved endeca change to all.yml
+emf:                                                  "3"
+dimension_list:                                       "property.starRating,property.locationDesc,property.facilityDesc,property.facilityCode,roomSku.beds,property.locationCode,property.landmarkCode"
+returned_items:                                        "8"
+thread_pool:                                           "5"
+number_of_returned_items:                                "9999"
+max_radius:                                            "10"
+max_pagination_limit:                                   "20000"
+ss_aggregator_timeout_msec:                           "25000"
+alt_price:                                             "False"

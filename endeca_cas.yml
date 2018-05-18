@@ -1,0 +1,9 @@
+---
+ 
+- hosts:        endeca_cas
+
+  roles:
+    - { role: common, app_user: "vagrant" } 
+    - { role: linux-jdk, jdk_installer: "jdk-7u51-linux-x64", app_user: "vagrant" }
+    - { role: endeca_cas, app_user: "vagrant" } 
+

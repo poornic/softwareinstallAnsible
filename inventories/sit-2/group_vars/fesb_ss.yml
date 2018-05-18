@@ -1,0 +1,11 @@
+---
+
+fesb_ss_instances:
+ - uesb6
+
+endeca_host:                                           "endmdex1-sit.emea.kuoni.int"
+endeca_port:                                           "80"
+endeca_app2_url:                                       "endmdex2-sit.emea.kuoni.int"
+endeca_app3_url:                                       "endmdex3-sit.emea.kuoni.int"
+endeca_app2_port:                                      "80"
+endeca_app3_port:                                      "80"

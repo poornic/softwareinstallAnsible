@@ -1,0 +1,48 @@
+---
+
+- name: Download and extract hornetq-{{ hornetq_version }}-bin.tar.gz archive
+  unarchive: src={{ software_library_url }}/hornetq/hornetq-{{ hornetq_version }}-bin.tar.gz dest=/opt/ copy=no creates=/opt/hornetq-{{ hornetq_version }}
+
+- name: Create the hornetq home
+  shell: "cp -r /opt/hornetq-{{ hornetq_version }}/* {{ hornetq_home }}/"
+  args:
+   creates="{{ hornetq_home }}/bin/run.sh"
+
+- name: Remove the hornetq-{{ hornetq_version }} archive
+  file: path=/opt/hornetq-{{ hornetq_version }} state=absent
+
+- name: Configure run.sh for hornetq
+  template: src=run.sh dest={{ hornetq_home }}/bin/run.sh
+  notify: restart hornetq
+
+- name: Copy stop.sh for hornetq
+  copy: src=stop.sh dest={{ hornetq_home }}/bin/stop.sh
+  notify: restart hornetq
+
+- name: Create the queues in hornetq
+  copy: src=hornetq-jms.xml dest={{ hornetq_home }}/config/stand-alone/clustered/hornetq-jms.xml
+  notify: restart hornetq
+
+- name: Configure hornetq-configuration.xml for hornetq
+  template: src=hornetq-configuration.xml dest={{ hornetq_home }}/config/stand-alone/clustered/hornetq-configuration.xml
+  notify: restart hornetq
+
+- name: Configure hornetq-users.xml for hornetq
+  template: src=hornetq-users.xml dest={{ hornetq_home }}/config/stand-alone/clustered/hornetq-users.xml
+  notify: restart hornetq
+
+- name: Configure logging.properties for hornetq
+  copy: src=logging.properties dest={{ hornetq_home }}/config/stand-alone/clustered/logging.properties
+
+- name: Create {{ hornetq_home }}/logs directory
+  file: path={{ hornetq_home }}/logs state=directory mode=0755
+  notify: restart hornetq
+
+- name: Change owner:group of hornetq instance
+  file: path={{ hornetq_home }} owner={{ app_user }} group={{ app_user }} state=directory recurse=yes
+
+- name: Create services for hornetq instance
+  copy: src=hornetq-init dest=/etc/init.d/hornetq mode=0755
+
+- name: Ensure service for hornetq instance is running
+  service: name=hornetq state=started enabled=yes

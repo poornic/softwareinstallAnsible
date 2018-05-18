@@ -1,0 +1,19 @@
+---
+
+hornetq_version:      		"2.4.0.Final"
+hornetq_home:		 		"/opt/hornetq"
+hq_user:				"guest"
+hq_pwd:				"guest"
+hornerq_clustered:	 		false
+multicast_ip:
+hornetq_Xms:          		"2G"
+hornetq_Xmx:          		"2G"
+hornetq_jmxremote_port: 		"5001"
+hornetq_jnp_port: 			"1099"
+hornetq_rmi_port: 			"1098"
+hornetq_remoting_netty_port:	"5445"
+hornetq_max_size_bytes:		"1048576000"
+hornetq_page_size_bytes:		"10485760"
+hornetq_address_full_policy:	 PAGE
+
+

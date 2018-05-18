@@ -1,0 +1,9 @@
+---
+fesb_instances:
+  - uesb1
+
+# Type of environment being provisioned
+env_type: "test"
+hornetq_clustered:          false
+hornetq_Xms:                "2G"
+hornetq_Xmx:                "2G"

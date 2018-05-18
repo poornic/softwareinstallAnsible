@@ -1,0 +1,9 @@
+---
+
+- hosts: coh_domain
+
+  roles:
+    - { role: common, app_user: "weblogic" }
+    - { role: linux-jdk, app_user: "weblogic" }
+    - { role: weblogic, app_user: "weblogic" }
+    - { role: wls_domain, app_user: "weblogic", wlg_domain_type: "coh", tags: ["wls_domain"] }

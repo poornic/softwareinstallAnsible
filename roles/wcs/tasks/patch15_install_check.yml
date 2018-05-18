@@ -1,0 +1,14 @@
+---
+
+ - name: "Patch15 : Determine if installed"
+   command: grep "cs.deleteExcessRevisionsFromDisk=true" {{ wcs_home }}/futuretense.ini
+   register: patch15_check
+   ignore_errors: true
+   changed_when: false
+
+ - name: "Patch15 : Install patch for each Tomcat instance"
+   include: patch15_install.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance
+   when: patch15_check.rc != 0

@@ -1,0 +1,50 @@
+[bo]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[fo]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[atg]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[coh]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[coh_domain]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[weblogic:children]
+atg
+coh
+
+[fesb]
+172.17.0.2 ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root'
+
+[ds_uesb]
+docker-ssh-container ansible_ssh_host=172.17.0.3 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[endeca_all]
+docker-ssh-container ansible_ssh_host=172.17.0.3 ansible_ssh_port=22 ansible_ssh_user='root'
+
+[jdk]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[tomcat]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[tomcat8]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+## Endeca
+
+[endeca_cas]
+docker-ssh-container ansible_ssh_host=172.17.0.3 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[endeca_tf]
+docker-ssh-container ansible_ssh_host=172.17.0.3 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[endeca_ps]
+docker-ssh-container ansible_ssh_host=172.17.0.3 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa
+
+[endeca_mdex]
+docker-ssh-container ansible_ssh_host=172.17.0.2 ansible_ssh_port=22 ansible_ssh_user='root' ansible_ssh_private_key_file=~/.ssh/ansible_id_rsa

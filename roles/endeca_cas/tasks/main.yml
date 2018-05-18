@@ -1,0 +1,29 @@
+---
+
+- name: Download the Endeca CAS installation
+  unarchive: src={{ software_library_url }}/endeca/CAS/{{ endeca_cas_installer }}.zip dest={{ downloads_dir }} copy=no list_files=yes mode=0755 group={{ app_user }} owner={{ app_user }}
+  register: cas_script
+
+- name: Copy cas.properties
+  template: src=cas.properties dest={{ downloads_dir }}
+
+- name: Install Endeca CAS
+  shell: "{{ downloads_dir }}/{{ cas_script.files | join('') }} --silent --target /opt --endeca_tools_root {{ endeca_tools_root  }} --endeca_tools_conf {{ endeca_tools_root }}/server/workspace  < {{ downloads_dir }}/cas.properties"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}" 
+  args:
+   warn: false
+   creates: "{{ endeca_home }}/CAS"
+
+- name: Set permissions on cas-service.sh
+  file: path={{ endeca_home }}/CAS/{{ endeca_cas_version }}/bin/cas-service.sh mode=0755
+
+- name: Copy the Endeca CAS service script
+  template: src=cas-service dest=/etc/init.d/endeca-cas mode=0755
+
+- name: Ensure Endeca CAS service is started
+  service: name=endeca-cas state=started enabled=yes
+
+  
+

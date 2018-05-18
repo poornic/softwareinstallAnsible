@@ -1,0 +1,9 @@
+---
+
+- hosts: jdk
+  vars:
+   create_app_user: false
+
+  roles:
+    - common
+    - { role: linux-jdk, jdk_installer: "jdk-8u92-linux-x64" }

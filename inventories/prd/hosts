@@ -1,0 +1,30 @@
+[datasync_uesb]
+lonsesb01b1_dsync ansible_host=lonsesb01b1
+lonsesb01b2_dsync ansible_host=lonsesb01b2
+lonsesb01b3_dsync ansible_host=lonsesb01b3
+
+[fesb_ss]
+lonsesb01b1_fesb_ss ansible_host=lonsesb01b1
+lonsesb01b2_fesb_ss ansible_host=lonsesb01b2
+lonsesb01b3_fesb_ss ansible_host=lonsesb01b3
+
+[ds_uesb]
+lonsesb01b1_ds ansible_host=lonsesb01b1
+lonsesb01b2_ds ansible_host=lonsesb01b2
+lonsesb01b3_ds ansible_host=lonsesb01b3
+
+
+[ds_besb]
+lonsddl01a1_ds_1 ansible_host=lonsatg01i
+lonsddl01a1_ds_2 ansible_host=lonsatg01j
+
+
+[fesb]
+lonsesb01a8_fesb  ansible_host=lonsesb01a8
+lonsesb01a9_fesb  ansible_host=lonsesb01a9
+lonsesb01a10_fesb ansible_host=lonsesb01a10
+
+[besb]
+lonsesb01b1_besb ansible_host=lonsesb01b1
+lonsesb01b2_besb ansible_host=lonsesb01b2
+lonsesb01b3_besb ansible_host=lonsesb01b3

@@ -1,0 +1,39 @@
+---
+
+ots_uesb_instances:
+ - uesb1
+
+apps_to_deploy:
+ - ots-content-gateway
+ - ots-media-gateway
+
+# Common
+import_suite_dburl:             "jdbc:oracle:thin:@//longora02uatscan.hosting.travel.lcl:1529/ean_import_suite_gsuatdb_srv.hosting.travel.lcl"
+import_suite_dbusername:        "APP_EAN_IMPORT_SUITE"
+import_suite_dbpassword:        "App_E4n_Import_5uite"
+
+# ots-content-gateway
+ots_media_services_url:          "http://longesb05d1:8580/service"
+info_contract_dburl:            "jdbc:oracle:thin:@//longora02uatscan.hosting.travel.lcl:1529/support_gsuatdb_srv.hosting.travel.lcl"
+info_contract_dbusername:       "APP_CONTENT_UPLOAD_IC9"
+info_contract_dbpassword:       "kouni123"
+
+# ots-media-gateway
+image_host_url:                 "http://tkimages.axisdata.net/ImageConverter.php"
+scene7_ftp_url:                 "s7ftp3.scene7.com"
+scene7_ftp_username:            "kuoniist"
+scene7_ftp_password:            "N0o1*p2q!"
+scene7_ftp_port:  "21"
+scene7_ftp_directory: "media"
+scene7_ftp_imagesdir: "Images"
+
+# OTS connects to HornetQ running on TST9
+
+ots_hornetq_host_url: "longesb05d1"
+ots_hornetq_host_port: "5445"
+ots_hornetq_UDPBroadcastGroupConfiguration_groupAddress: "231.7.7.52"
+ots_hornetq_UDPBroadcastGroupConfiguration_groupPort: "9876"
+ots_hornetq_UDPBroadcastGroupConfiguration_localBindAddress: "10.200.8.52"
+ots_hornetq_UDPBroadcastGroupConfiguration_localBindPort: "-1"
+ots_queue_concurrent_consumers: "5"
+ots_queue_concurrent_max_consumers: "5"

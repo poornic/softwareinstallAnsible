@@ -1,0 +1,17 @@
+---
+
+# get_url + unzip must be used due to Ansible 2.1 bug in unarchive, that means archived containing files with spaces canbnot be extracted.
+
+ - name: "Patch15 : Download patch"
+   get_url: url={{ software_library_url }}/wcs/Patch15_WCS11.zip dest={{ downloads_dir }}/Patch15_WCS11.zip 
+
+ - name: "Patch15 : Extract patch"
+   shell: unzip -d {{ downloads_dir }} {{ downloads_dir }}/Patch15_WCS11.zip ; chown -R {{ app_user }}:{{ app_group }} {{ downloads_dir }}/patch
+   args:
+     creates: "{{ downloads_dir }}/patch"
+
+ - name: "Patch15 : Check patch installed on Tomcat instance"
+   include: patch15_install_check.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance

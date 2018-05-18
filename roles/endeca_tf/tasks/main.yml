@@ -1,0 +1,40 @@
+---
+
+- name: Download the Endeca TF installation
+  unarchive: src={{ software_library_url }}/endeca/ToolsAndFrameworks/{{ endeca_tf_installer }}.zip dest={{ downloads_dir }} copy=no
+
+- name: Copy the Endeca TF installation response file
+  template: src=tf_silent_response.rsp dest={{ downloads_dir }}
+
+- name: Install Endeca TF software
+  shell: "{{ downloads_dir }}/cd/Disk1/install/silent_install.sh {{ downloads_dir }}/tf_silent_response.rsp ToolAndFrameworks {{ endeca_home }}/ToolsAndFrameworks admin"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}"
+  args:
+    warn: true
+    creates: "{{ endeca_home }}/ToolsAndFrameworks"
+
+- name: Download TF Patch
+  get_url: url={{ software_library_url }}/endeca/ToolsAndFrameworks/{{ endeca_tf_patch_installer }}.zip dest={{ downloads_dir }}/
+
+- name: Install Endeca TF Patch 
+  #unarchive: src={{ software_library_url }}/endeca/ToolsAndFrameworks/{{ endeca_tf_patch_installer }}.zip dest={{ endeca_home }} copy=no mode=0755 group={{ app_user }} owner={{ app_user }} creates={{ endeca_tools_root }}/server/.DS_Store
+  shell: unzip -o -q -d {{ endeca_home }} {{ downloads_dir }}/{{ endeca_tf_patch_installer }}.zip 
+  args:
+   creates: "{{ endeca_tools_root }}/server/.DS_Store"
+
+- name: Set Permissions
+  file: path={{ endeca_tools_root }} group={{ app_user }} owner={{ app_user }} recurse=yes
+
+- name: Copy the Endeca TF service script
+  template: src=workbench-init.d.sh dest=/etc/init.d/endeca-tf mode=0755
+
+- name: Start the Endeca TF service
+  shell: "{{ endeca_tools_root }}/server/bin/startup.sh"
+  become: true
+  become_method: sudo
+  become_user: "{{ app_user }}"
+
+- name: Ensure Endeca TF service is started
+  service: name=endeca-tf state=started enabled=yes

@@ -1,0 +1,32 @@
+---
+
+ - name: Download jdk archive from software library
+   get_url: url={{ software_library_url }}/java/{{ jdk_installer }}.tar.gz dest={{ downloads_dir }}/{{ jdk_installer }}.tar.gz force=no
+
+ - name: Extract the JDK version
+   shell: tar -ztvf {{ downloads_dir }}/{{ jdk_installer }}.tar.gz | head -1 | cut -d " " -f8
+   args:
+    warn: false
+   register: jdk_version
+
+ - name: Extract JDK archive
+#   unarchive: src={{ software_library_url }}/java/{{ jdk_installer }}.tar.gz dest=/opt creates=/opt/{{ jdk_version.stdout }} copy=no
+   command: 'tar -xf {{ downloads_dir }}/{{ jdk_installer }}.tar.gz -C /opt'
+   args:
+    warn: false
+    creates: /opt/{{ jdk_version.stdout }}
+
+ - set_fact: java_home=/opt/{{jdk_version.stdout}}
+
+ - block:
+
+   - name: ensure bashrc present
+     file: path={{ app_user_home }}/.bashrc state=touch
+
+   - name: Add JAVA_HOME environment variables in bashrc
+     lineinfile: dest='{{ app_user_home }}/.bashrc' line='export JAVA_HOME=/opt/{{ jdk_version.stdout }}' state=present regexp='^export JAVA_HOME=.*$'
+
+   - name: Add Java bin folder to path in bashrc
+     lineinfile: dest='{{ app_user_home }}/.bashrc' line='export PATH=$JAVA_HOME/bin:$PATH' state=present
+
+   when: create_app_user

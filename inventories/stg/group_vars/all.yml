@@ -1,0 +1,15 @@
+---
+
+datasync_uesb_instances:
+ - uesb4
+
+ds_uesb_instances:
+ - uesb7
+
+ds_besb_instances:
+ - uesb3
+
+fesb_ss_instances:
+ - uesb8
+
+uesb_app_user_home:    "/opt/{{ app_user }}"

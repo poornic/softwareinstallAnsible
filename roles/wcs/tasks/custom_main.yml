@@ -1,0 +1,25 @@
+---
+
+ - name: Generate SSH keys for WCS application user
+   user: name={{ app_user }} generate_ssh_key=yes 
+
+ - name: Obtain public key
+   shell: cat /opt/{{ tomcat_major_version }}/.ssh/id_rsa.pub
+   become_user: tomcat
+   register: wcs_ssh_key
+ 
+ - name: Add SSH key to Endeca server
+   authorized_key: user={{ endeca_app_user }} key={{ wcs_ssh_key.stdout }}
+   delegate_to: "{{ item }}"
+   with_items: "{{ groups['wcs_endeca'] }}"
+
+ - name: Create export folder on Endeca server
+   file: path={{ endeca_export_path }} state=directory mode=777 owner={{ endeca_app_user }} group={{ endeca_app_user }}
+   delegate_to: "{{ item }}"
+   with_items: "{{ groups['wcs_endeca'] }}"
+
+ - name: Apply custom updates to Tomcat instances
+   include: custom_install.yml
+   with_items: "{{ tomcat_instances }}"
+   loop_control:
+     loop_var: tomcat_instance

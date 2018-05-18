@@ -1,0 +1,5 @@
+---
+java_home:              "/opt/jdk1.8.0_92"
+jdk_installer: "jdk-8u92-linux-x64"
+app_user: "ots-user"
+app_user_home: "/opt/ots-flatfile-data-loader/"

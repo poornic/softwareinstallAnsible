@@ -1,0 +1,22 @@
+if [ -f {{ endeca_home }}/MDEX/{{ endeca_mdex_version }}/mdex_setup_sh.ini ]
+then
+        source {{ endeca_home }}/MDEX/{{ endeca_mdex_version }}/mdex_setup_sh.ini
+fi
+if [ -f {{ endeca_home }}/PlatformServices/workspace/setup/installer_sh.ini ]
+then
+        source {{ endeca_home }}/PlatformServices/workspace/setup/installer_sh.ini
+fi
+if [ -d {{ endeca_home }}/CAS/{{ endeca_cas_version }}/ ]
+then
+        CAS_ROOT={{ endeca_home }}/CAS/{{ endeca_cas_version }}/
+        export CAS_ROOT
+fi
+if [ -d {{ endeca_home }}/ ]
+then
+        export ENDECA_ROOT
+fi
+if [ -d /opt/gradle-{{ gradle_version }} ]
+then
+        alias g='gradle'
+        export PATH=$PATH:/opt/gradle-{{ gradle_version }}/bin
+fi

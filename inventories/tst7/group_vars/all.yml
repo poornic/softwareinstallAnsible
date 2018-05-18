@@ -1,0 +1,12 @@
+---
+
+env_type:          "test"
+
+fesb_instances:
+  - ultraesb
+pnr_instances:
+  - uesb2
+fesb_ss_instances:
+  - uesb3
+
+uesb_app_user_home:    "/opt/{{ app_user }}"

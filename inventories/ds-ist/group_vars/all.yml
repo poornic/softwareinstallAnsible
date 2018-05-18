@@ -1,0 +1,5 @@
+---
+uesb_instances:
+  - name:          uesb1
+    http_8280:     8280
+    http_8443:     8443

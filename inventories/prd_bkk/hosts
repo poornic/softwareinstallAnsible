@@ -1,0 +1,48 @@
+[atg_bo]
+bkkbwebadprd01 ansible_host=10.246.5.200
+
+[coh]
+bkkbwebadprd01 ansible_host=10.246.5.200
+
+[besb]
+bkkbesbbeprd01 ansible_host=10.246.5.30
+
+[datasync_uesb]
+bkkbesbbeprd01 ansible_host=10.246.5.30
+
+[fesb]
+bkkbesbfeprd01 ansible_host=10.246.5.21
+bkkbesbfeprd02 ansible_host=10.246.5.22
+bkkbesbfeprd03 ansible_host=10.246.5.23
+bkkbesbfeprd04 ansible_host=10.246.5.24
+
+[endeca_itl]
+bkkbenditprd01 ansible_host=10.246.14.20
+
+[endeca_mdex]
+bkkbendmdprd01 ansible_host=10.246.14.11
+bkkbendmdprd02 ansible_host=10.246.14.12
+bkkbendmdprd03 ansible_host=10.246.14.13
+bkkbendmdprd04 ansible_host=10.246.14.14
+
+[atg_bo_nodes]
+bkkbatgapbko01 ansible_host=10.246.5.51
+bkkbatgapbko02 ansible_host=10.246.5.52
+
+[coh_nodes]
+bkkbcohapprd01 ansible_host=10.246.5.11
+bkkbcohapprd02 ansible_host=10.246.5.12
+bkkbcohapprd03 ansible_host=10.246.5.13
+bkkbcohapprd04 ansible_host=10.246.5.14
+bkkbcohapprd05 ansible_host=10.246.5.15
+
+[ddl]
+bkkbendddprd01 ansible_host=10.246.5.40
+
+[weblogic:children]
+atg_bo_nodes
+atg_bo
+coh_nodes
+
+[jdk:children]
+ddl

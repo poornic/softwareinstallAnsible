@@ -1,0 +1,128 @@
+---
+
+# Booking Engine properties
+mq_connectionFactory_port:                        "1414"
+mq_connectionFactory_channel:                     "LONDEV.CBS.CSC.001"
+mq_connectionFactory_queueManager:                "LONDEV.CBS.MANAGER.001"
+mq_connectionFactory_hostName:                    "londev.as400.gta-travel.com"
+booking_response_queue:                           "NOVA.QIN.001"
+price_service_url:                                "http://fesb-sit.emea.kuoni.int:8280/service/booking-price-service-proxy"
+mq_enquiry_receive_timeout:                       "20000"
+http_response_timeout:                            "30000"
+
+# Client Config properties
+dataservices_soa_url:                             "http://hotels.test.gta-travel.com/soadataservices/client"
+
+# Payment Service properties
+auth_payment_response_queue:                      "EXT.CCA.RSP"
+auth_payment_request_queue:                       "CBS.CCA.RQS"
+auth_payment_service_name:                        "paymentAuth1"
+auth_payment_service_password:                    "419a13f4f1c68e1e70f6f1c162d4c41a"
+auth_flightcentre_username:                       "API_OCTOP"
+auth_flightcentre_password:                       "8R!t!AN-R0x6"
+auth_flightcentre_customerid:                     "CI_GTA_OCTOP"
+auth_flightcentre_payee:                          "OCTOP"
+auth_flightcentre_proxy:                          "http://esb-sit.emea.kuoni.int:8284/service/fc-proxy"
+auth_flightcentre_payment_gateway_request_timeout: "10000"
+
+auth_enett_ecn:                                   "222880"
+auth_enett_integrator:                            "OCTOPUS"
+auth_enett_version:                               "1.0"
+auth_enett_source:                                "RBSAU"
+auth_enett_integratorkey:                         "7867fd7g86jghshfydfygs7df8"
+auth_enett_proxy:                                 "http://esb-sit.emea.kuoni.int:8284/service/enett-proxy"
+auth_enett_payment_gateway_request_timeout: 	  "10000"
+payment_service_logging_level:                    "INFO"
+
+
+# Payment Gateway properties
+auth_flightcentre_url:                            "https://paymentgate-stg.flightcentre.com.au/PaymentGate/services/api"
+auth_enett_url:                                   "https://enett-demo.com/NextGenDebitService/Debitservice.asmx/Process_Direct_Debit"
+auth_psp_request_timeout:                         "10000"
+
+include_proxy_business_services: false
+
+http_8283_port:               "8283"
+http_8284_port:               "8284"
+http_8286_port:               "8286"
+
+# Finance
+biztalkurl:                   "http://gfgeab09.kuoni.gfglocal.int/BizTalkWcfService/KuoniFOIntegration.svc"
+gcFinanceUrlPurchaseInvoices: "http://longtct05ags:8085/gcfinance6/rest/invoiceWS"
+gcFinanceUrlOfflineReceipts:  "http://longtct05ags:8085/gcfinance6/rest/offlineReceiptWS"
+
+# Reporting
+reportingEngineUrl:           "http://longtct05ags/reportingengine6/ic/invoicepdf"
+
+# Payment Service
+include_payment_service:                          true
+mq_connectionFactory_port:                        "1414"
+mq_connectionFactory_channel:                     "LONDEV.CBS.CSC.001"
+mq_connectionFactory_queueManager:                "LONDEV.CBS.MANAGER.001"
+mq_connectionFactory_hostName:                    "londev.as400.gta-travel.com"
+
+auth_payment_response_queue:                      "EXT.CCA.RSP"
+auth_payment_request_queue:                       "CBS.CCA.RQS"
+
+auth_payment_service_name:                        "paymentAuth1"
+auth_payment_service_password:                    "419a13f4f1c68e1e70f6f1c162d4c41a"
+
+auth_flightcentre_username:                       "API_OCTOP"
+auth_flightcentre_password:                       "8R!t!AN-R0x6"
+auth_flightcentre_customerid:                     "CI_GTA_OCTOP"
+auth_flightcentre_payee:                          "OCTOP"
+auth_flightcentre_proxy:                          "http://esb-sit.emea.kuoni.int:8284/service/fc-proxy"
+auth_flightcentre_payment_gateway_request_timeout: "100000"
+auth_flightcentre_username_NZD:						"API_OCTNZ"
+auth_flightcentre_password_NZD:						"Paymentgate2@"
+auth_flightcentre_customerid_NZD:					"CI_GTA_OCTNZ"
+auth_flightcentre_payee_NZD:						"OCTNZ"
+
+auth_enett_proxy:                                 "http://esb-sit.emea.kuoni.int:8284/service/enett-proxy"
+auth_enett_ecn:                                   "222880"
+auth_enett_integrator:                            "OCTOPUS"
+auth_enett_version:                               "1.0"
+auth_enett_source:                                "RBSAU"
+auth_enett_integratorkey:                         "7867fd7g86jghshfydfygs7df8"
+auth_enett_payment_gateway_request_timeout:        "100000"
+
+
+include_booking_engine:                           false
+include_datasync:                                 false
+include_client_config:                            false
+include_deeplink_signon:                          false
+
+
+# Global collect api details
+connect_api_integrator:				  "GTA"
+connect_api_endpoint_host:			  "api-preprod.globalcollect.com"
+connect_api_authorizationType:			  "V1HMAC"
+connect_api_connectTimeout:			  "5000"
+connect_api_socketTimeout:			  "300000"
+connect_api_maxConnections:			  "10"
+
+connect_api_globalcollect_key:			  "a699df6de26f8887"
+connect_api_globalcollect_secret:		  "XKK7vR0/WRfqAFuahNu3+x1CT18PxT0Xyfy3q2WN72o="
+
+globalcollect_merchantid_039_USD:                 "1134"
+
+
+payment_service_logging_level:                    "DEBUG"
+
+# Payment Gateway properties
+include_payment_gateway:                          true
+auth_flightcentre_url:                            "https://paymentgate-stg.flightcentre.com.au/PaymentGate/services/api"
+auth_enett_url:                                   "https://enett-demo.com/NextGenDebitService/Debitservice.asmx/Process_Direct_Debit"
+auth_psp_request_timeout:                         "10000"
+
+# Payment Gateway Legacy
+# Global Collect Gateway
+include_globalcollect_payment_gateway:            true
+globalcollect_payment_auth_proxy:                 "http://esb-sit.emea.kuoni.int:8286/service/globalcollect-payment-auth-proxy"
+globalcollect_payment_capture_proxy:              "http://esb-sit.emea.kuoni.int:8286/service/globalcollect-payment-capture-proxy"
+globalcollect_payment_refund_proxy:               "http://esb-sit.emea.kuoni.int:8286/service/globalcollect-payment-refund-proxy"
+http_8285_port:                                   "8285"
+include_legacy_payment_service:                   true
+globalcollect_payment_response_queue:             "EXT.PSV.RSP"
+globalcollect_payment_request_queue:              "CBS.PSV.RQS"
+globalcollect_payment_gateway_request_timeout:    "10000"

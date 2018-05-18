@@ -1,0 +1,16 @@
+---
+
+tomcat_instances:
+ - tc2
+
+app: "wcs"
+
+jvm_args_mem:      "-Xms512m -Xmx2048m"
+jvm_args_permsize: "-XX:MaxPermSize=192m"
+
+wcs_db_url:        "jdbc:oracle:thin:@longora02cscan.emea.kuoni.int:1529/wcs_atg_atgtstj_srv.emea.kuoni.int"
+wcs_db_user:       "APP_WCS_ATG_IST"
+wcs_db_password:   "APP_WCS_ATG_IST"
+
+
+

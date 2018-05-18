@@ -1,0 +1,6 @@
+---
+weblogic_major_version: 12.2
+weblogic_minor_version: 1.2
+weblogic_jar_filename: "fmw_12.2.1.2.0_wls"
+jdk_installer:    "jdk-8u92-linux-x64"
+apply_coh_patch:  false

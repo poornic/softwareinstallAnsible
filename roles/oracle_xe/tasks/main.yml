@@ -1,0 +1,23 @@
+---
+
+ - name: Download and extract installer
+   unarchive: src={{ software_library_url }}/oracle/oracle-xe-11.2.0-1.0.x86_64.rpm.zip dest={{ downloads_dir }} copy=no
+   register: oracle_installer_files
+
+ - name: Install libaio
+   yum: name=libaio state=latest
+ 
+ - name: Install bc
+   yum: name=bc state=latest
+
+ - name: Install Oracle XE
+   yum: name={{ downloads_dir }}/Disk1/oracle-xe-11.2.0-1.0.x86_64.rpm state=present
+
+ - name: Configure
+   shell: /usr/bin/printf "{{ oracle_xe_http_port }}\\n{{ oracle_xe_db_port }}\\n{{ oracle_xe_sys_password }}\\n{{ oracle_xe_sys_password }}\\ny\\n" | /etc/init.d/oracle-xe configure
+   args:
+     creates: /etc/sysconfig/oracle-xe
+
+ - name: Start service
+   service: name=oracle-xe state=started
+

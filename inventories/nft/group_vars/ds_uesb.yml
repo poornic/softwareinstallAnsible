@@ -1,0 +1,10 @@
+
+java_home: "/opt/jdk1.8.0_92"
+ultraesb_major_version: 2.6
+ultraesb_minor_version: 1
+
+# JVM Settings for Ultraesb instances for DS_FESB
+jvm_initmem: "4096"
+jvm_maxmem:  "4096"
+
+custom_libs_zip:                "fesb_lib_custom_jars.zip"

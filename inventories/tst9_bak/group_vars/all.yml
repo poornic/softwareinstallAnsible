@@ -1,0 +1,31 @@
+---
+
+
+datasync_uesb_instances:
+- uesb3
+
+ots_uesb_instances:
+ - uesb4
+
+ots_uesb_2_instances:
+ - uesb6
+
+mts_pe_uesb_instances:
+ - uesb6
+
+besb_instances:
+ - uesb5
+
+fesb_instances:
+ - uesb1
+
+fesb_ss_instances:
+ - uesb3
+
+uesb_app_user_home:    "/opt/{{ app_user }}"
+
+## hornetq properties
+hornetq_clustered:          true
+hornetq_multicast_ip:       "231.7.7.52"
+hornetq_Xms:                "2G"
+hornetq_Xmx:                "2G"

@@ -1,0 +1,13 @@
+---
+
+ - name: setenv.sh
+   template: src={{ item }} dest={{ tomcat_home }}/{{ tomcat_instance }}/bin/ owner={{ app_user }} group={{ app_group }}
+   with_first_found:
+    - "{{ app }}/setenv.sh"
+    - "setenv.sh"
+
+ - name: server.xml
+   template: src={{ item }} dest={{ tomcat_home }}/{{ tomcat_instance }}/conf/ owner={{ app_user }} group={{ app_group }}
+   with_first_found:
+    - "{{ app }}/server.xml"
+    - "server.xml"

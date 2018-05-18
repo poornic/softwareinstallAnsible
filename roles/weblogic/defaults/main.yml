@@ -1,0 +1,20 @@
+---
+
+weblogic_major_version:     12.1
+weblogic_minor_version:     2.0
+weblogic_version:           "{{weblogic_major_version}}.{{weblogic_minor_version}}"
+weblogic_jar_filename:      "weblogicserver_{{weblogic_version}}"
+weblogic_patch_version:      "011"
+weblogic_coh_patch_version:  "121203"
+oracle_coherence_version:    "12.1.2.0.3"
+apply_coh_patch:             true
+
+weblogic_user:               "weblogic"
+weblogic_password:           "weblogic1"
+
+oracle_base:                 "/opt/oracle"
+oracle_home:                 "{{ oracle_base }}/middleware12c"
+ora_inventory:               "{{ oracle_base }}/oraInventory"
+atg_version:                 11.1
+server_name:                 "{{ ansible_hostname }}"
+server_ip:                   "{{ ansible_eth0.ipv4.address }}"

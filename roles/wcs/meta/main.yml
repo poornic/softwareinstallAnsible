@@ -1,0 +1,4 @@
+---
+
+dependencies:
+   - { role: tomcat, restart_tomcat: false }

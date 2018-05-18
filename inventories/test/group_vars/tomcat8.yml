@@ -1,0 +1,5 @@
+---
+tomcat_instances: 
+  - tc1
+  - tc2
+app:  "tomcat8"

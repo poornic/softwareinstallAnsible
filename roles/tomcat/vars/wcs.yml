@@ -1,0 +1,8 @@
+---
+
+wc_home:                     "/opt/webcenter"
+wcs_home:                    "{{ wc_home }}/sites_{{ tomcat_instance }}"
+wcs_db_driver:               "oracle.jdbc.driver.OracleDriver"
+wcs_db_max_connections:      "100"
+wcs_db_max_idle_connections: "30"
+

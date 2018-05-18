@@ -1,0 +1,4 @@
+---
+- hosts: tomcat
+  roles:
+   - { role: tomcat, restart_tomcat: true }

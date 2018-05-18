@@ -1,0 +1,7 @@
+---
+
+- hosts: pnr
+
+  roles:
+    - { role: common, app_user: "ultraesb" }
+    - { role: ultraesb, uesb_instances: "{{ pnr_instances }}" }

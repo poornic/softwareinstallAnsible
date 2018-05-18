@@ -1,0 +1,44 @@
+[atg]
+orcswlg05a ansible_host=140.86.10.158 ansible_user=opc
+
+[bo]
+orcswlg05a
+
+[fo]
+orcswlg05a
+
+[coh]
+orcswlg05a
+
+[weblogic:children]
+atg
+coh
+
+[endeca_cas]
+orcsend05a
+
+[endeca_tf]
+orcsend05a
+
+[endeca_ps]
+orcsend05a
+
+[endeca_mdex]
+orcsend05a
+
+[fesb]
+orcsesb05a1 ansible_host=140.86.10.55 ansible_user=opc
+
+[besb]
+orcsesb05b1
+
+[pnr]
+orcsesb05a1 ansible_host=140.86.10.55 ansible_user=opc
+
+[hornetq]
+orcsesb05b1
+
+[ultraesb:children]
+fesb
+besb
+pnr

@@ -1,0 +1,8 @@
+---
+besb:
+ - name:      uesb1
+   http_8280: 8280
+   http_8443: 8443
+
+env_type: "test"
+

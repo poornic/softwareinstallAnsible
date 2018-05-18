@@ -1,0 +1,6 @@
+---
+- include: setup.yml
+- include: install.yml
+  with_items: "{{ uesb_instances }}"
+  loop_control:
+    loop_var: uesb_instance

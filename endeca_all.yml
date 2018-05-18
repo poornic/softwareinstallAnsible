@@ -1,0 +1,11 @@
+---
+
+- hosts: endeca_all
+
+  roles:
+    - { role: common, app_user: "vagrant" }
+    - gradle
+    - { role: linux-jdk, jdk_installer: "jdk-7u51-linux-x64", app_user: "vagrant" }
+    - { role: endeca_cas, app_user: "vagrant" }
+    - { role: endeca_ps, app_user: "vagrant", eac_type: "server" }
+    - { role: endeca_mdex, app_user: "vagrant" }

@@ -1,0 +1,8 @@
+---
+
+app_group:            "{{ app_user }}"
+app_user_home:        "/opt/{{ app_user }}"
+downloads_dir:        "/opt/install"
+software_library_url: "http://longsfw01a.emea.kuoni.int/software"
+script_dir:           "/opt/scripts"
+create_app_user:      true

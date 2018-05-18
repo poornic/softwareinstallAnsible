@@ -1,0 +1,8 @@
+---
+# S3 Gateway JVM Settings
+jvm_initmem: "2048"
+jvm_maxmem:  "2048"
+
+
+ds_besb_instances:
+ - uesb2

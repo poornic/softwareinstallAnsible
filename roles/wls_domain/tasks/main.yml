@@ -1,0 +1,70 @@
+---
+
+ - name: Copy the domain creation script
+   template: src=create_weblogic_domain_all.py dest={{ script_dir }}
+
+ - name: Copy domain properties file
+   template: src=weblogic_domain_all.properties dest={{ script_dir }}
+   register: domainprops
+
+# Execute WLST with urandom to make it run faster
+# Execute conditionally
+# http://jira.emea.kuoni.int/browse/CM-816
+ - name: Execute WLST to create the domain
+   shell: >
+    export CONFIG_JVM_ARGS="-Djava.security.egd=file:/dev/./urandom $CONFIG_JVM_ARGS";
+    {{ oracle_home }}/oracle_common/common/bin/wlst.sh {{ script_dir }}/create_weblogic_domain_all.py {{ script_dir }}/weblogic_domain_all.properties
+   become: true
+   become_method: sudo
+   become_user: "{{ app_user }}"
+
+ - name: Extract the jars to the DOMAIN_HOME/lib
+   shell: wget -nd -r -l1 -A.jar {{ software_library_url }}/atg/{{ atg_version }}/jars/
+   become: true
+   become_method: sudo
+   become_user: "{{ app_user }}"
+   args:
+    warn: false
+    chdir: "{{ domain_home }}/lib"
+
+ - name: Copy the log4j files to DOMAIN_HOME/config
+   copy: src=log4j/ dest={{ domain_home }}/config owner={{ app_user }} group={{ app_user }}
+
+ - name: Create security directoy to Nodemanager Home
+   file: state=directory path={{ nodemanager_home }}/security owner={{ app_user }} group={{ app_user }}
+
+ - name: Copy DemoIdentity key store to Nodemanager Home
+   #copy: src={{ domain_home }}/security/DemoIdentity.jks dest={{ nodemanager_home }}/security/DemoIdentity.jks owner={{ app_user }} group={{ app_user }}
+   shell: cp {{ domain_home }}/security/DemoIdentity.jks {{ nodemanager_home }}/security/DemoIdentity.jks
+   become: true
+   become_method: sudo
+   become_user: "{{ app_user }}"
+   args:
+    creates: "{{ nodemanager_home }}/security/DemoIdentity.jks"
+
+ - name: Update the umask in startNodeManager.sh
+   lineinfile: dest={{ oracle_home }}/wlserver/server/bin/startNodeManager.sh line='umask 022' state=present regexp='^umask.*$'
+
+ - name: Update the umask in startWebLogic.sh
+   lineinfile: dest={{ domain_home }}/bin/startWebLogic.sh line='umask 022' state=present regexp='^umask.*$'
+
+ - name: Copy Nodemanager Properties and Domain files
+   template: src={{item}} dest={{ nodemanager_home }}/ owner={{ app_user }} group={{ app_user }}
+   with_items:
+     - nodemanager.properties
+     - nodemanager.domains
+
+ - name: Copy the NodeManager and AdminServer Service scripts
+   template: src={{item}} dest=/etc/init.d/{{item}} mode=0755
+   with_items:
+     - wlsnodemanager
+     - wlsadmin
+
+ - name: Copy WLS script to manage servers via Node Manager
+   template: src=wlsmanage.py dest={{ script_dir }} mode=0755
+
+ - name: Ensure Node Manager service is running
+   service: name=wlsnodemanager state=started enabled=yes
+
+ - name: Ensure AdminServer service is running
+   service: name=wlsadmin state=started enabled=yes

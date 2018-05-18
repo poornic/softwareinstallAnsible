@@ -1,0 +1,16 @@
+---
+
+app_user:             "tomcat"
+app_group:            "tomcat"
+
+tomcat_version:       "7.0.57"
+tomcat_major_version: "tomcat{{ tomcat_version[0:1] }}"
+tomcat_home:          "/opt/{{ tomcat_major_version }}"
+tomcat_log_home:      "/var/log/{{ tomcat_major_version }}"
+tomcat_restart:       true
+
+java_home:            "/usr/java/jdk1.7.0_80"
+jvm_args_mem:         "-Xms1G -Xmx1G"
+jvm_args_permsize:     "-XX:PermSize=512m -XX:MaxPermSize=512m"
+jvm_args_res:         "-XX:ReservedCodeCacheSize=100m"
+jvm_args_gcthreads:   "-XX:ParallelGCThreads=8"

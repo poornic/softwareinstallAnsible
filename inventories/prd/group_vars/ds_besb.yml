@@ -1,0 +1,6 @@
+java_home: "/opt/jdk1.8.0_92"
+ultraesb_major_version: 2.6
+ultraesb_minor_version: 1
+ultraesb_user: "ultraesb"
+http_8280_port: "8480"
+custom_libs_zip:                "besb_lib_custom_jars.zip"

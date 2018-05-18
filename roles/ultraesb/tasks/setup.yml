@@ -1,0 +1,11 @@
+---
+# do basic sanity checks before provisioning
+- fail:
+    msg: "uesb_instances value is not defined"
+  when: uesb_instances is not defined
+
+- package:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - unzip

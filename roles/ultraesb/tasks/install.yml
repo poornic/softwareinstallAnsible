@@ -1,0 +1,111 @@
+---
+
+- name: Download the ultraesb-{{ ultraesb_version }} from software library
+  get_url: url={{ software_library_url }}/ultraesb/adroitlogic-ultraesb-{{ ultraesb_version }}.zip dest={{ downloads_dir }}/adroitlogic-ultraesb-{{ ultraesb_version }}.zip force=no
+
+# The unarchive module is commented out, as it throws error with ansible v2.1 (Unexpected error when accessing exploded file: [Errno 2] No such file or directory)
+- name: Extract ultraesb-{{ ultraesb_version }} archive
+#  unarchive: src={{ downloads_dir }}/adroitlogic-ultraesb-{{ ultraesb_version }}.zip dest=/opt/ creates=/opt/ultraesb-{{ ultraesb_version }} copy=no
+  shell: "unzip {{ downloads_dir }}/adroitlogic-ultraesb-{{ ultraesb_version }}.zip -d /opt/"
+  args:
+     creates: /opt/ultraesb-{{ ultraesb_version }}
+
+- name: Create the instance home
+  file: path={{ uesb_home }} state=directory
+
+- name: Create the log directory
+  file: path={{ uesb_logs_home }} state=directory owner={{ ultraesb_user }} group={{ ultraesb_user }}
+
+- name: Extract ultraesb software to instance home
+  shell: "cp -r /opt/ultraesb-{{ ultraesb_version }}/* {{ uesb_home }}/"
+  args:
+   creates: "{{ uesb_home }}/RELEASE_NOTES.TXT"
+
+- name: Remove the ultraesb-{{ ultraesb_version }} archive
+  file: path=/opt/ultraesb-{{ ultraesb_version }} state=absent
+
+
+- name: list of scripts for UltraESB {{ ultraesb_version }}
+  set_fact:
+    uesb_scripts:
+      - ultraesb-daemon.sh
+      - zkServer-daemon.sh
+  when: ultraesb_major_version == 2.6
+
+- name: list of scripts for UltraESB < 2.6.1
+  set_fact:
+    uesb_scripts:
+      - uconsole-daemon.sh
+      - ultraesb-daemon.sh
+      - zkServer-daemon.sh
+  when: ultraesb_major_version < 2.6
+
+- name: Update ULTRA_HOME value
+  lineinfile: dest={{ uesb_home }}/bin/{{ item }} regexp='^ULTRA_HOME=' line="ULTRA_HOME=$(dirname $(readlink -f $0) | sed 's@/bin@@')"
+  with_items:
+    "{{ uesb_scripts }}"
+
+- name: Install Service Pack
+  include: install_patch.yml
+  tags: install_patch
+  when: ultraesb_major_version < 2.6
+
+# Required from R9 to remove the libraries from ULTRA_HOME/lib directory only for fesb nodes
+# To review following upgrade of UltraESB version
+- block:
+        - name: Remove libraries from ULTRA_HOME.lib
+          file: path={{ uesb_home }}/{{ item }} state=absent
+          with_items:
+           - lib/optional/xercesImpl-2.9.1.jar
+           - lib/httpclient-4.2.6.jar
+           - lib/httpcore-4.2.5-PRIVATE-011.jar
+
+        - name: Copy libraries to ULTRA_HOME/lib
+          copy: src={{ item }} dest={{ uesb_home }}/lib/{{ item }}
+          with_items:
+           - httpclient-4.3.3.jar
+           - httpcore-4.3.2.jar
+
+  when: ('fesb' in group_names) or
+        ('fesb_ss' in group_names) or
+        ('ots_uesb' in group_names)
+
+- name: ensure directory exists
+  file: name={{ uesb_home }}/lib/custom/ state=directory
+- name: Download libraries from lib/custom
+  unarchive: src={{ software_library_url }}/ultraesb/{{ custom_libs_zip }} dest={{ uesb_home }}/lib/custom/ copy=no
+  when: ("pnr" not in group_names)
+
+- name: Copy licence to ultraesb instances (v {{ultraesb_version}})
+  copy: src={{ultraesb_version}}/ dest={{ uesb_home }}/conf/license/
+
+- name: Copy ultra-root.xml and wrapper.conf
+  template: src={{ item }} dest={{ uesb_home }}/conf/
+  with_items:
+   - ultra-root.xml
+   - wrapper.conf
+  notify: restart ultraesb
+
+- name: Update java executable location to an absolute path in wrapper.conf
+  lineinfile: dest={{ uesb_home }}/conf/wrapper.conf regexp=^wrapper.java.command line=wrapper.java.command={{ java_home }}/bin/java
+
+- name: Remove default application and logs dir
+  file: path={{ uesb_home }}/{{ item }} state=absent
+  with_items:
+   - conf/deployments/default
+   - logs
+
+- name: Create a symbolic link to logs
+  file: src={{ uesb_logs_home }} dest={{ uesb_home }}/logs state=link
+
+- name: Create cache directory
+  file: path=/tmp/ram/{{ uesb_instance }} owner={{ ultraesb_user }} group={{ ultraesb_user }} state=directory
+
+- name: Change owner and group of ultraesb instances
+  file: path={{ uesb_home }} owner={{ ultraesb_user }} group={{ ultraesb_user }} state=directory recurse=yes
+
+- name: Create services for ultraesb instances
+  file: src={{ uesb_home }}/bin/ultraesb-daemon.sh dest=/etc/init.d/{{ uesb_instance }} state=link
+
+- name: Ensure services for ultraesb instances are running
+  service: name={{ uesb_instance }} state=started enabled=yes

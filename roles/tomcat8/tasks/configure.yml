@@ -1,0 +1,17 @@
+---
+
+ - name: create bin directory in tomcat instance
+   file: path={{ tomcat_instance_home }}/bin state=directory owner={{ app_user }} group={{ app_group }}
+   
+   
+ - name: setenv.sh
+   template: src={{ item }} dest={{ tomcat_instance_home }}/bin/ owner={{ app_user }} group={{ app_group }} mode=0777
+   with_first_found:
+    - "{{ app }}/setenv.sh"
+    - "setenv.sh"
+
+ - name: server.xml
+   template: src={{ item }} dest={{ tomcat_instance_home }}/conf/ owner={{ app_user }} group={{ app_group }}
+   with_first_found:
+    - "{{ app }}/server.xml"
+    - "server.xml"

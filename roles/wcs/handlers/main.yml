@@ -1,0 +1,7 @@
+---
+
+ - name: restart tomcat
+   command: service {{ tomcat_major_version }} {{ item.0 }}-{{ item.1 }} 
+   with_nested: 
+    - [ "stop", "start" ]
+    - "{{ tomcat_instances }}"

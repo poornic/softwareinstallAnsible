@@ -1,0 +1,48 @@
+---
+
+clustered_environment:                                true
+
+fesb_instances:
+ - uesb1
+
+besb_instances:
+ - uesb2
+
+datasync_uesb_instances:
+ - uesb4
+
+fess_uesb_instances:
+ - uesb6
+
+pnr_instances:
+ - uesb3
+
+hornetq_UDPBroadcastGroupConfiguration_groupAddress:  "229.2.2.1"
+hornetq_UDPBroadcastGroupConfiguration_groupPort:     "9876"
+
+# Coherence cluster
+tangosol_coherence_cacheconfig:                       "coherence/nova-cache-config.xml"
+tangosol_coherence_cluster:                           "nova-datagrid-SIT"
+tangosol_coherence_clusteraddress:                    "229.2.5.1"
+tangosol_coherence_clusterport:                       "9092"
+tangosol_coherence_distributed_localstorage:          "false"
+
+# Search Service / FE Search Service
+endeca_host:                                           "endmdex1-sit.emea.kuoni.int"
+endeca_port:                                           "80"
+endeca_app2_url:                                       "endmdex2-sit.emea.kuoni.int"
+endeca_app3_url:                                       "endmdex3-sit.emea.kuoni.int"
+endeca_app2_port:                                      "80"
+endeca_app3_port:                                      "80"
+emf:                                                  "3"
+htmlfe_priceservice_url:                              "http://nps-sit.emea.kuoni.int:8280/service/xmlPriceSearchFS"
+dimension_list:                                       "property.starRating,property.locationDesc,property.facilityDesc,property.facilityCode,roomSku.beds,property.locationCode,property.landmarkCode"
+returnedItems:                                        "8"
+threadPool:                                           5
+numberOfReturnedItems:                                9999
+maxRadius:                                            10
+maxPaginationLimit:                                   20000
+ss_aggregator_timeout_msec:                           9000
+aot_service_url:                                      "http://hotels.test.gta-travel.com/soadataservices/aot"
+pnr_specialOffers_url:                                "http://nps-sit.emea.kuoni.int:8280/service/xmlSpecialOffersSearch"
+altPrice:                                             "false"

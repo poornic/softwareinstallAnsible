@@ -1,0 +1,37 @@
+---
+
+wls_admin_host: "longwlg05b"
+wls_admin_port: "7001"
+
+include_coherence: true
+include_bo:        false
+include_fo:        false
+
+machines:
+  - name: "{{ wls_admin_host }}"
+    addr: "10.200.8.176"
+    port: "5556"
+    type: "SSL"
+
+coh_wka:      "{{ wls_admin_host }}"
+# change required for weblogic 12.2+
+# http://jira.emea.kuoni.int/browse/CM-816
+coh_wka_port: "7574"
+
+clusters:
+  - "{{ coh_web_cluster }}"
+  - "{{ coh_wls_cluster }}"
+
+coh_machines: "{{ machines }}"
+coh_machines_list:     "{{ wls_admin_host }}"
+
+coh_mbean_svr_addr:    "{{ wls_admin_host }}"
+coh_mbean_svr_machine: "{{ wls_admin_host }}"
+coh_mbean_svr_port:    "7003"
+
+coh_web_svr_addr:      "{{ wls_admin_host }}"
+coh_web_svr_machine:   "{{ wls_admin_host }}"
+coh_web_svr_port:      "7007"
+# change required for weblogic 12.2+
+# http://jira.emea.kuoni.int/browse/CM-816
+coh_web_startup_args:  "{{ coh_web_args_test_env_12_2 }}"

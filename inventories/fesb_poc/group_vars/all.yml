@@ -1,0 +1,6 @@
+---
+
+fesb_instances:
+ - uesb1
+
+uesb_app_user_home:    "/opt/{{ app_user }}"

@@ -1,0 +1,23 @@
+---
+### Docker-specific config
+# directories on server to persist docker container data.
+mysql_docker_persistence_dir: "/opt/mysql_data"
+sonarqube_docker_persistence_dir: "/opt/sonarqube_data"
+mysql_data_dir: "{{mysql_docker_persistence_dir}}/data"
+mysql_conf_dir: "{{mysql_docker_persistence_dir}}/conf.d"
+# container names
+mysql_container_name: "sonarqube_db_1"
+mysql_image: "mysql:5.7"
+sonar_container_name: "sonarqube_sonar_1"
+sonar_image: "sonarqube:6.2"
+
+# MySQL configuration
+mysql_port: 3306
+mysql_root_password: "root"
+# Sonar configuration
+sonar_port: 9000
+sonar_admin_port: 9002
+sonar_db: "sonarqubedb"
+sonar_db_username: "sonaruser"
+sonar_db_password: "sonaruser"
+sonar_jdbc_url: "jdbc:mysql://{{mysql_container_name}}:{{mysql_port}}/{{sonar_db}}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"

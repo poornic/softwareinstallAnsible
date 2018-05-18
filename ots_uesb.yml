@@ -1,0 +1,8 @@
+---
+
+- hosts: ots_uesb
+  roles:
+    - { role: common, app_user: "ultraesb", app_user_home: "{{ uesb_app_user_home }}" }
+    - { role: linux-jdk, jdk_installer: "jdk-8u92-linux-x64", app_user: "ultraesb" }
+    - { role: ultraesb, uesb_instances: "{{ ots_uesb_instances }}" }
+  serial: 1

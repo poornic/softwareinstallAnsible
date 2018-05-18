@@ -1,0 +1,18 @@
+[datasync_uesb]
+longesb04a1_dsync ansible_host=longesb04a1
+longesb04a2_dsync ansible_host=longesb04a2
+longesb04a3_dsync ansible_host=longesb04a3
+
+[fesb_ss]
+longesb04a1_fesb_ss ansible_host=longesb04a1
+longesb04a2_fesb_ss ansible_host=longesb04a2
+longesb04a3_fesb_ss ansible_host=longesb04a3
+
+[ds_uesb]
+longesb04a1_ds_fesb ansible_host=longesb04a1
+longesb04a2_ds_fesb ansible_host=longesb04a2
+longesb04a3_ds_fesb ansible_host=longesb04a3
+
+[ds_besb]
+longesb04a4_ds1 ansible_host=longesb04a5
+longesb04a5_ds2 ansible_host=longesb04a6

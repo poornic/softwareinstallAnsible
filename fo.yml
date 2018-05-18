@@ -1,0 +1,9 @@
+---
+ 
+- hosts:        fo
+
+  roles:
+    - { role: common, app_user: "weblogic" } 
+    - { role: linux-jdk, jdk_installer: "jdk-7u51-linux-x64", app_user: "weblogic" }
+    - { role: weblogic, app_user: "weblogic", wlg_domain_type: "fo" } 
+

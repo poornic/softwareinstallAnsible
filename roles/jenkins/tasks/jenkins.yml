@@ -1,0 +1,28 @@
+---
+- name: dependencies
+  become: yes
+  package: name={{ item }} state=installed
+  with_items: "{{ dependencies }}"
+
+- name: download jenkins RPM
+  get_url:
+    url: http://pkg.jenkins-ci.org/redhat-stable/jenkins-2.46.3-1.1.noarch.rpm
+    dest: "{{downloads_dir}}"
+    creates: "{{downloads_dir}}/jenkins-2.46.3-1.1.noarch.rpm"
+
+- name: install from RPM
+  yum:
+    name: "{{downloads_dir}}/jenkins-2.46.3-1.1.noarch.rpm"
+    state: present
+
+- name: Install dependencies
+  package: name={{ item }} state=installed
+  become: yes
+  with_items: "{{ dependencies }}"
+
+- name: Send templated Jenkins config
+  template: src=sysconfig_jenkins dest=/etc/sysconfig/jenkins
+  notify:
+    - restart jenkins
+  tags:
+    - config

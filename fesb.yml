@@ -1,0 +1,8 @@
+---
+
+- hosts: fesb
+
+  roles:
+    - { role: common, app_user: "ultraesb" }
+    - { role: linux-jdk, jdk_installer: "jdk-8u92-linux-x64", app_user: "ultraesb" }
+    - { role: ultraesb, uesb_instances: "{{ fesb_instances }}" }

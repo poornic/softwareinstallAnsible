@@ -1,0 +1,12 @@
+---
+
+- name: Create ENDECA_HOME directory
+  file: path={{ endeca_home }} state=directory owner={{ app_user }} group={{ app_user }} recurse=yes
+
+- set_fact:
+   bash_profile_content: "{{ lookup('template', 'templates/bash_profile.j2') }}"
+
+- name: Update bash_profile with Endeca files to source
+  blockinfile:
+   dest:  "{{ app_user_home }}/.bash_profile"
+   block: "{{ bash_profile_content }}"
